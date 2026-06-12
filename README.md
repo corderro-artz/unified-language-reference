@@ -38,8 +38,9 @@ generated docs; `docs/` holds the design notes.
    Context7). Unverifiable values are dropped, never guessed.
 2. **Walk the template** top to bottom; for each section evaluate its
    `include_if` / `omit_if` and keep or delete the whole block.
-3. **Fill by format** — exact table columns where the data is enumerable, the
-   compact prose atom (`**Name** — purpose`) where a feature needs a *why*.
+3. **Fill by format** — exact table columns where the data is enumerable, a
+   bulleted list of prose atoms (`- **Name** — purpose`, one per bullet) where a
+   feature needs a *why*.
 4. **Assemble** — `#` title, `##` Contents (a TOC grouped by Part, surviving
    sections only, linked by their full titles), `##` Parts, `###` sections.
    Drop any Part left empty.
@@ -55,8 +56,14 @@ The `language-reference-author` skill performs all five steps.
 `badges`
 
 ## Contents
-- **Identity** — Overview · Language Type · Paradigms · Mental Model
-- **Foundations** — Type System · Data Structures · Operators & Expressions
+- **Identity**
+  - Overview
+  - Language Type
+  - Paradigms
+  - Mental Model
+- **Foundations**
+  - Type System
+  - ...
 ...
 
 ## Identity            <- Part (H2)

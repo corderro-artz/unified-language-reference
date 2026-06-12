@@ -18,8 +18,9 @@
    body, and comments. Never leave an empty heading.
 3. Fill each kept section by its `format`:
    - `table` — use the columns from the named `table_schema`, exactly.
-   - `prose` — use the feature atom: `**Name** — purpose` + an optional snippet.
-   - `mixed` — a lead table, then prose for nuance.
+   - `prose` — a bulleted list of feature atoms: `- **Name** — purpose` + an
+     optional snippet. One atom per bullet.
+   - `mixed` — a lead table, then a bulleted atom list for nuance.
 4. After all sections are resolved, build the **Contents** block: a TOC grouped
    by Part, listing only the sections that survived, in order.
 5. Strip **every** directive comment and Part marker. Replace **every**
@@ -33,6 +34,10 @@
 - **Real estate.** Prefer a **table** whenever the data is enumerable (types,
   operators, data structures, tooling, stdlib, naming). Reserve prose for
   features whose *why* needs a sentence (closures, ownership, paradigms).
+- **Prose atoms.** Emit each `**Name** — purpose` atom as its own Markdown
+  **list item** (`- **Name** — purpose`), one per line. Never stack bare atoms
+  as consecutive lines — GFM collapses them into one run-on paragraph. Indent
+  any wrapped continuation line by two spaces so it stays in the bullet.
 - **Code.** Snippets are short, **one statement per line**, and **never wrap** —
   keep every line under ~64 columns. Shorten or split rather than wrap.
 - **GFM.** Tables, `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]` callouts for idioms
@@ -89,19 +94,29 @@ required: true
 heading: h2
 grouping: by_part
 includes: surviving_sections_only
-note: Build this AFTER omission. One bullet per Part that retains sections;
-      link each surviving section by its anchor, using the section's full
-      title as the link text, verbatim. Drop Parts with no sections.
+style: nested_bullets
+note: Build this AFTER omission. One top-level bullet per Part that retains
+      sections (bold Part name, no link); under it, one indented sub-bullet
+      per surviving section, linking to its anchor and using the section's
+      full title as the link text, verbatim. Drop Parts with no sections.
 -->
 ## Contents
 
-- **Identity** — {{links to surviving Identity sections}}
-- **Foundations** — {{...}}
-- **Logic** — {{...}}
-- **Abstraction** — {{...}}
-- **Runtime** — {{...}}
-- **Practice** — {{...}}
-- **Reference** — {{...}}
+- **Identity**
+  - [Overview](#overview)
+  - {{indented sub-bullet per surviving Identity section}}
+- **Foundations**
+  - {{indented sub-bullet per surviving Foundations section}}
+- **Logic**
+  - {{...}}
+- **Abstraction**
+  - {{...}}
+- **Runtime**
+  - {{...}}
+- **Practice**
+  - {{...}}
+- **Reference**
+  - {{...}}
 
 ---
 
@@ -146,7 +161,8 @@ fill: Copy applicable entries from the canonical menu. Each line:
 -->
 ### Paradigms
 
-{{applicable paradigm bullets, each ending in a "Here:" clause}}
+- **{{Paradigm}}** — {{canonical definition, verbatim}} Here: {{how it manifests}}
+- **{{Paradigm}}** — {{canonical definition, verbatim}} Here: {{how it manifests}}
 <!-- /SECTION -->
 
 <!-- SECTION: mental-model | Mental Model
@@ -173,7 +189,11 @@ fill: comments, statement termination, block style, keyword casing, entry
 -->
 ### Lexical & Syntax
 
-{{comments, terminators, block style, entry point, file structure}}
+- **{{Comments}}** — {{line and block syntax}}
+- **{{Statements}}** — {{terminator and block style}}
+- **{{Keywords}}** — {{casing}}
+- **{{Entry point}}** — {{how a program starts}}
+- **{{File structure}}** — {{imports placement, file rules}}
 <!-- /SECTION -->
 
 <!-- SECTION: variables | Variables & Bindings
@@ -186,7 +206,10 @@ fill: declaration forms, mutability (const/let/val/var), scope, shadowing,
 -->
 ### Variables & Bindings
 
-{{declaration forms, mutability, scope, constants}}
+- **{{Declaration}}** — {{forms and mutability}}
+- **{{Constants}}** — {{compile-time constant form}}
+- **{{Scope}}** — {{scoping rules}}
+- **{{Shadowing}}** — {{whether and how allowed}}
 <!-- /SECTION -->
 
 <!-- SECTION: type-system | Type System
@@ -208,11 +231,10 @@ fill: Lead with the primitives table. Then prose atoms for inference,
 | {{f64}} | {{float}} | {{64-bit}} | {{IEEE-754}} | {{`1.0`}} |
 | {{bool}} | {{boolean}} | {{1 byte}} | {{true / false}} | {{`true`}} |
 
-**Inference** — {{when and how types are inferred}}
-**Conversion** — {{implicit coercion vs explicit cast}}
-**Nullability** — {{how absence is represented}}
-
-{{Generics (omit if none): parameterization, bounds, variance}}
+- **Inference** — {{when and how types are inferred}}
+- **Conversion** — {{implicit coercion vs explicit cast}}
+- **Nullability** — {{how absence is represented}}
+- {{Generics (omit if none): parameterization, bounds, variance}}
 <!-- /SECTION -->
 
 <!-- SECTION: data-structures | Data Structures
@@ -248,7 +270,7 @@ fill: Table grouped by Category (Arithmetic, Comparison, Logical, Bitwise,
 | {{Comparison}} | {{`==`}} | {{equal}} | {{`a == b`}} | {{}} |
 | {{Special}} | {{`?`}} | {{try}} | {{`f()?`}} | {{propagates error}} |
 
-{{precedence or overloading notes, if any}}
+- **{{Overloading / precedence}}** — {{surprises or operator overloading, if any}}
 <!-- /SECTION -->
 
 <!-- ===================== PART: logic | Logic ===================== -->
@@ -264,7 +286,10 @@ fill: conditionals (if/switch/match), loops (for/while/foreach), pattern
 -->
 ### Control Flow
 
-{{conditionals, loops, matching, comprehensions, guards}}
+- **{{Conditionals}}** — {{if / switch / match forms}}
+- **{{Loops}}** — {{for / while / foreach}}
+- **{{Pattern matching}}** — {{matching and guards, if any}}
+- **{{Jumps}}** — {{break / continue / return}}
 <!-- /SECTION -->
 
 <!-- SECTION: functions | Functions
@@ -277,7 +302,10 @@ fill: declaration, parameters (default/named/variadic), return, first-class
 -->
 ### Functions
 
-{{declaration, parameters, first-class/closures/lambdas, generators}}
+- **{{Declaration}}** — {{how functions are defined}}
+- **{{Parameters}}** — {{default / named / variadic / by-ref}}
+- **{{First-class}}** — {{closures, lambdas, function values}}
+- **{{Generators}}** — {{lazy sequences, if any}}
 <!-- /SECTION -->
 
 <!-- SECTION: error-handling | Error Handling
@@ -290,7 +318,9 @@ fill: the mechanism — exceptions (try/catch/finally), result/option types,
 -->
 ### Error Handling
 
-{{mechanism, propagation, assertions}}
+- **{{Mechanism}}** — {{exceptions / result / option / panics}}
+- **{{Propagation}}** — {{how errors travel up}}
+- **{{Assertions}}** — {{assert and guard helpers}}
 <!-- /SECTION -->
 
 <!-- ===================== PART: abstraction | Abstraction ===================== -->
@@ -306,7 +336,12 @@ fill: type definition, instantiation, fields/methods, encapsulation/visibility,
 -->
 ### Object Model
 
-{{definition, instantiation, encapsulation, inheritance, interfaces, polymorphism}}
+- **{{Types}}** — {{kinds of user-defined types}}
+- **{{Instantiation}}** — {{how instances are created}}
+- **{{Encapsulation}}** — {{visibility modifiers}}
+- **{{Inheritance}}** — {{model and modifiers}}
+- **{{Interfaces}}** — {{contracts / traits / protocols}}
+- **{{Polymorphism}}** — {{dispatch model}}
 <!-- /SECTION -->
 
 <!-- SECTION: functional-constructs | Functional Constructs
@@ -319,7 +354,11 @@ fill: immutability, pure functions, algebraic data types, option/result,
 -->
 ### Functional Constructs
 
-{{immutability, ADTs, option/result, currying, laziness}}
+- **{{Immutability}}** — {{immutable values and copies}}
+- **{{First-class functions}}** — {{lambdas, closures, method values}}
+- **{{Pattern matching}}** — {{matching on data shapes}}
+- **{{ADTs}}** — {{sum / product types, option / result}}
+- **{{Laziness}}** — {{lazy evaluation, if any}}
 <!-- /SECTION -->
 
 <!-- SECTION: modules | Modules & Namespaces
@@ -332,7 +371,10 @@ fill: module/namespace unit, import/export, cross-module visibility,
 -->
 ### Modules & Namespaces
 
-{{module unit, import/export, visibility, packaging/registry}}
+- **{{Module unit}}** — {{namespace / module concept}}
+- **{{Imports}}** — {{import / export syntax}}
+- **{{Visibility}}** — {{cross-module access rules}}
+- **{{Packaging}}** — {{package format and registry}}
 <!-- /SECTION -->
 
 <!-- SECTION: metaprogramming | Metaprogramming & Reflection
@@ -345,7 +387,10 @@ fill: macros, reflection, decorators/attributes/annotations, code generation,
 -->
 ### Metaprogramming & Reflection
 
-{{macros, reflection, decorators, codegen, compile-time eval}}
+- **{{Reflection}}** — {{runtime introspection, if any}}
+- **{{Attributes / decorators}}** — {{declarative metadata}}
+- **{{Code generation}}** — {{macros / source generators}}
+- **{{Compile-time eval}}** — {{const evaluation, if any}}
 <!-- /SECTION -->
 
 <!-- ===================== PART: runtime | Runtime ===================== -->
@@ -361,7 +406,10 @@ fill: allocation model (manual / GC / ARC / ownership-borrow), pointers and
 -->
 ### Memory Management
 
-{{allocation model, references/pointers, lifetimes, destruction}}
+- **{{Allocation}}** — {{manual / GC / ARC / ownership}}
+- **{{References / pointers}}** — {{what the language exposes}}
+- **{{Lifetimes}}** — {{how lifetime is managed}}
+- **{{Destruction}}** — {{destructors / RAII / finalizers}}
 <!-- /SECTION -->
 
 <!-- SECTION: concurrency | Concurrency & Parallelism
@@ -374,7 +422,10 @@ fill: threads, async/await, futures/promises, channels/goroutines, actors,
 -->
 ### Concurrency & Parallelism
 
-{{threads, async, channels/actors, synchronization}}
+- **{{Threads}}** — {{native threading model}}
+- **{{Async}}** — {{async / await, futures / promises}}
+- **{{Channels / actors}}** — {{message passing, if any}}
+- **{{Synchronization}}** — {{locks, atomics}}
 <!-- /SECTION -->
 
 <!-- ===================== PART: practice | Practice ===================== -->
@@ -431,7 +482,9 @@ fill: Naming table per identifier kind. Then prose for indentation, project
 | {{constants}} | {{UPPER_SNAKE}} | {{`MAX_LEN`}} |
 | {{files}} | {{convention}} | {{`user_service.ext`}} |
 
-{{indentation/formatting, project layout, doc-comment style}}
+- **{{Formatting}}** — {{indentation and brace style}}
+- **{{Project layout}}** — {{file and directory conventions}}
+- **{{Doc comments}}** — {{doc-comment style}}
 
 {{official style guide: link}}
 <!-- /SECTION -->
@@ -446,7 +499,8 @@ fill: short list. Each: the idiom or the gotcha in one or two sentences.
 -->
 ### Idioms & Gotchas
 
-{{idiomatic patterns and common pitfalls}}
+- **{{Idiom}}** — {{recommended pattern, one sentence}}
+- **{{Gotcha}}** — {{the footgun, one sentence}}
 <!-- /SECTION -->
 
 <!-- ===================== PART: reference | Reference ===================== -->

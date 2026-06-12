@@ -4,13 +4,37 @@
 
 ## Contents
 
-- **Identity** — [Overview](#overview) · [Language Type](#language-type) · [Paradigms](#paradigms) · [Mental Model](#mental-model)
-- **Foundations** — [Lexical & Syntax](#lexical--syntax) · [Variables & Bindings](#variables--bindings) · [Type System](#type-system) · [Data Structures](#data-structures) · [Operators & Expressions](#operators--expressions)
-- **Logic** — [Control Flow](#control-flow) · [Functions](#functions) · [Error Handling](#error-handling)
-- **Abstraction** — [Object Model](#object-model) · [Functional Constructs](#functional-constructs) · [Modules & Namespaces](#modules--namespaces) · [Metaprogramming & Reflection](#metaprogramming--reflection)
-- **Runtime** — [Memory Management](#memory-management) · [Concurrency & Parallelism](#concurrency--parallelism)
-- **Practice** — [Standard Library — Start Here](#standard-library--start-here) · [Tooling & Ecosystem](#tooling--ecosystem) · [Conventions & Style](#conventions--style) · [Idioms & Gotchas](#idioms--gotchas)
-- **Reference** — [Versioning & Editions](#versioning--editions) · [Resources](#resources)
+- **Identity**
+  - [Overview](#overview)
+  - [Language Type](#language-type)
+  - [Paradigms](#paradigms)
+  - [Mental Model](#mental-model)
+- **Foundations**
+  - [Lexical & Syntax](#lexical--syntax)
+  - [Variables & Bindings](#variables--bindings)
+  - [Type System](#type-system)
+  - [Data Structures](#data-structures)
+  - [Operators & Expressions](#operators--expressions)
+- **Logic**
+  - [Control Flow](#control-flow)
+  - [Functions](#functions)
+  - [Error Handling](#error-handling)
+- **Abstraction**
+  - [Object Model](#object-model)
+  - [Functional Constructs](#functional-constructs)
+  - [Modules & Namespaces](#modules--namespaces)
+  - [Metaprogramming & Reflection](#metaprogramming--reflection)
+- **Runtime**
+  - [Memory Management](#memory-management)
+  - [Concurrency & Parallelism](#concurrency--parallelism)
+- **Practice**
+  - [Standard Library — Start Here](#standard-library--start-here)
+  - [Tooling & Ecosystem](#tooling--ecosystem)
+  - [Conventions & Style](#conventions--style)
+  - [Idioms & Gotchas](#idioms--gotchas)
+- **Reference**
+  - [Versioning & Editions](#versioning--editions)
+  - [Resources](#resources)
 
 ---
 
@@ -57,13 +81,13 @@ the runtime own memory so you focus on modeling the domain.
 
 ### Lexical & Syntax
 
-**Comments** — `//` line, `/* ... */` block, `///` XML doc comments.
-**Statements** — terminated with `;`; blocks delimited by `{ }`.
-**Keywords** — lowercase (`class`, `public`, `await`).
-**Entry point** — a `Main` method, or top-level statements in one file
-that the compiler wraps into an implicit entry point.
-**File structure** — code lives in namespaces; `using` directives sit
-at the top. One file may hold many types; the file name need not match.
+- **Comments** — `//` line, `/* ... */` block, `///` XML doc comments.
+- **Statements** — terminated with `;`; blocks delimited by `{ }`.
+- **Keywords** — lowercase (`class`, `public`, `await`).
+- **Entry point** — a `Main` method, or top-level statements in one file
+  that the compiler wraps into an implicit entry point.
+- **File structure** — code lives in namespaces; `using` directives sit
+  at the top. One file may hold many types; the file name need not match.
 
 ```csharp
 Console.WriteLine("Hello, World!");
@@ -71,13 +95,13 @@ Console.WriteLine("Hello, World!");
 
 ### Variables & Bindings
 
-**`var`** — implicitly typed local; the type is inferred and fixed.
-**Explicit type** — `int x = 5;` declares the type manifestly.
-**`const`** — compile-time constant; must be a literal value.
-**`readonly`** — field assignable only in declaration or constructor.
-**Scope** — block-scoped; locals must be assigned before use.
-**Shadowing** — a local may not hide another local in scope, but can
-shadow a field (disambiguate with `this.`).
+- **`var`** — implicitly typed local; the type is inferred and fixed.
+- **Explicit type** — `int x = 5;` declares the type manifestly.
+- **`const`** — compile-time constant; must be a literal value.
+- **`readonly`** — field assignable only in declaration or constructor.
+- **Scope** — block-scoped; locals must be assigned before use.
+- **Shadowing** — a local may not hide another local in scope, but can
+  shadow a field (disambiguate with `this.`).
 
 ```csharp
 var name = "Ada";
@@ -114,16 +138,15 @@ const int Max = 100;
 no fixed range.
 </details>
 
-**Inference** — `var` infers a local's type; generic method type
-arguments are usually inferred from the arguments.
-**Conversion** — widening numeric conversions are implicit; narrowing
-needs an explicit cast `(int)x`. No implicit `decimal`↔`double`.
-**Nullability** — reference types are non-nullable by default;
-`string?` opts in to null. Value types use `Nullable<T>` / `int?`.
-
-**Generics** — types and methods take type parameters with `where`
-constraints (`where T : class`, `: IComparable<T>`, `: new()`).
-Generics are reified: type arguments persist at runtime.
+- **Inference** — `var` infers a local's type; generic method type
+  arguments are usually inferred from the arguments.
+- **Conversion** — widening numeric conversions are implicit; narrowing
+  needs an explicit cast `(int)x`. No implicit `decimal`↔`double`.
+- **Nullability** — reference types are non-nullable by default;
+  `string?` opts in to null. Value types use `Nullable<T>` / `int?`.
+- **Generics** — types and methods take type parameters with `where`
+  constraints (`where T : class`, `: IComparable<T>`, `: new()`).
+  Generics are reified: type arguments persist at runtime.
 
 > [!NOTE]
 > Each keyword above is an alias for a `System` type — `int` is
@@ -166,9 +189,9 @@ Generics are reified: type arguments persist at runtime.
 | Special | `=>` | lambda | `x => x + 1` | also expr body |
 | Special | `is` | pattern test | `o is int n` | type/pattern match |
 
-**Overloading** — most operators are user-overloadable via
-`static operator` members. C# 14 adds user-defined compound
-assignment operators (e.g. a custom `+=`).
+- **Overloading** — most operators are user-overloadable via
+  `static operator` members. C# 14 adds user-defined compound
+  assignment operators (e.g. a custom `+=`).
 
 > [!NOTE]
 > C# 14 allows null-conditional operators on the left of an
@@ -179,16 +202,16 @@ assignment operators (e.g. a custom `+=`).
 
 ### Control Flow
 
-**`if` / `else`** — boolean conditional branching.
-**`switch` statement** — multi-way branch; supports patterns and
-`when` guards.
-**`switch` expression** — `x switch { 1 => "a", _ => "b" }` returns a
-value.
-**`for` / `while` / `do`** — counted and conditional loops.
-**`foreach`** — iterates any `IEnumerable<T>`.
-**Pattern matching** — type, property, list, and relational patterns
-combine with `is` and `switch`.
-**Jumps** — `break`, `continue`, `return`, `goto`.
+- **`if` / `else`** — boolean conditional branching.
+- **`switch` statement** — multi-way branch; supports patterns and
+  `when` guards.
+- **`switch` expression** — `x switch { 1 => "a", _ => "b" }` returns a
+  value.
+- **`for` / `while` / `do`** — counted and conditional loops.
+- **`foreach`** — iterates any `IEnumerable<T>`.
+- **Pattern matching** — type, property, list, and relational patterns
+  combine with `is` and `switch`.
+- **Jumps** — `break`, `continue`, `return`, `goto`.
 
 ```csharp
 var label = n switch
@@ -201,17 +224,17 @@ var label = n switch
 
 ### Functions
 
-**Declaration** — methods belong to a type; return type precedes the
-name. Expression-bodied form: `int Sq(int x) => x * x;`.
-**Parameters** — support defaults (`int x = 0`), named arguments,
-`params` arrays/collections, and `ref`/`out`/`in` by-reference.
-**Local functions** — nested, named functions that capture locals.
-**Lambdas** — `(x, y) => x + y`; C# 14 allows modifiers on simple
-lambda parameters without naming the type.
-**First-class** — functions are values via `delegate`, `Func<>`,
-`Action<>`; passed and stored freely.
-**Higher-order** — methods take and return delegates (LINQ).
-**Iterators** — `yield return` produces lazy sequences.
+- **Declaration** — methods belong to a type; return type precedes the
+  name. Expression-bodied form: `int Sq(int x) => x * x;`.
+- **Parameters** — support defaults (`int x = 0`), named arguments,
+  `params` arrays/collections, and `ref`/`out`/`in` by-reference.
+- **Local functions** — nested, named functions that capture locals.
+- **Lambdas** — `(x, y) => x + y`; C# 14 allows modifiers on simple
+  lambda parameters without naming the type.
+- **First-class** — functions are values via `delegate`, `Func<>`,
+  `Action<>`; passed and stored freely.
+- **Higher-order** — methods take and return delegates (LINQ).
+- **Iterators** — `yield return` produces lazy sequences.
 
 ```csharp
 Func<int, int> dbl = x => x * 2;
@@ -219,14 +242,14 @@ Func<int, int> dbl = x => x * 2;
 
 ### Error Handling
 
-**Exceptions** — the primary model: `throw`, `try`/`catch`/`finally`.
-Filter with `catch (E e) when (cond)`.
-**Resource cleanup** — `using` / `using` declarations dispose
-`IDisposable` deterministically at scope exit.
-**Propagation** — uncaught exceptions unwind the stack to the nearest
-matching handler.
-**Assertions** — `Debug.Assert` (debug builds);
-`ArgumentNullException.ThrowIfNull` and guard helpers for arguments.
+- **Exceptions** — the primary model: `throw`, `try`/`catch`/`finally`.
+  Filter with `catch (E e) when (cond)`.
+- **Resource cleanup** — `using` / `using` declarations dispose
+  `IDisposable` deterministically at scope exit.
+- **Propagation** — uncaught exceptions unwind the stack to the nearest
+  matching handler.
+- **Assertions** — `Debug.Assert` (debug builds);
+  `ArgumentNullException.ThrowIfNull` and guard helpers for arguments.
 
 ```csharp
 try { Risky(); }
@@ -238,21 +261,21 @@ finally { Cleanup(); }
 
 ### Object Model
 
-**Types** — `class` (reference), `struct` (value), `record` /
-`record struct` (value-equality), `interface`, and `enum`.
-**Instantiation** — `new T(args)`; object/collection initializers set
-members inline.
-**Members** — fields, properties (`{ get; set; }`, `init`), methods,
-events, indexers. The C# 14 `field` keyword gives a property accessor
-a synthesized backing field without declaring one.
-**Encapsulation** — access modifiers `public`, `private`,
-`protected`, `internal`, and combinations.
-**Inheritance** — single base class; `virtual`/`override`/`abstract`/
-`sealed` control polymorphism.
-**Interfaces** — multiple inheritance of contracts; may carry default
-implementations.
-**Polymorphism** — virtual dispatch plus generics.
-**Composition** — favored via interfaces and member objects.
+- **Types** — `class` (reference), `struct` (value), `record` /
+  `record struct` (value-equality), `interface`, and `enum`.
+- **Instantiation** — `new T(args)`; object/collection initializers set
+  members inline.
+- **Members** — fields, properties (`{ get; set; }`, `init`), methods,
+  events, indexers. The C# 14 `field` keyword gives a property accessor
+  a synthesized backing field without declaring one.
+- **Encapsulation** — access modifiers `public`, `private`,
+  `protected`, `internal`, and combinations.
+- **Inheritance** — single base class; `virtual`/`override`/`abstract`/
+  `sealed` control polymorphism.
+- **Interfaces** — multiple inheritance of contracts; may carry default
+  implementations.
+- **Polymorphism** — virtual dispatch plus generics.
+- **Composition** — favored via interfaces and member objects.
 
 ```csharp
 public record Point(int X, int Y);
@@ -260,16 +283,16 @@ public record Point(int X, int Y);
 
 ### Functional Constructs
 
-**Immutability** — `readonly` fields, `init` setters, and `record`
-types with nondestructive `with` copies.
-**First-class functions** — lambdas, delegates, method groups.
-**Pattern matching** — deconstruct and match records, tuples, and
-lists in `switch` expressions.
-**LINQ** — declarative query/transform over sequences, lazily
-evaluated.
-**Discriminated unions** — approximated today with records and
-sealed hierarchies (native unions are a proposed feature).
-**Tuples** — lightweight multiple returns with deconstruction.
+- **Immutability** — `readonly` fields, `init` setters, and `record`
+  types with nondestructive `with` copies.
+- **First-class functions** — lambdas, delegates, method groups.
+- **Pattern matching** — deconstruct and match records, tuples, and
+  lists in `switch` expressions.
+- **LINQ** — declarative query/transform over sequences, lazily
+  evaluated.
+- **Discriminated unions** — approximated today with records and
+  sealed hierarchies (native unions are a proposed feature).
+- **Tuples** — lightweight multiple returns with deconstruction.
 
 ```csharp
 var evens = nums.Where(n => n % 2 == 0);
@@ -277,28 +300,28 @@ var evens = nums.Where(n => n % 2 == 0);
 
 ### Modules & Namespaces
 
-**Namespace** — the logical grouping unit; `namespace App.Data;`
-(file-scoped) or block form. Maps to dotted type names.
-**Assembly** — the deployment/compilation unit (`.dll`/`.exe`); the
-boundary for `internal` visibility.
-**Imports** — `using App.Data;`; `global using` applies project-wide;
-`using static` imports static members.
-**Visibility** — `public` crosses assemblies; `internal` stays within
-one (widen via `InternalsVisibleTo`).
-**Packaging** — NuGet packages (`.nupkg`); the registry is
-nuget.org; restore and publish via the `dotnet` CLI.
+- **Namespace** — the logical grouping unit; `namespace App.Data;`
+  (file-scoped) or block form. Maps to dotted type names.
+- **Assembly** — the deployment/compilation unit (`.dll`/`.exe`); the
+  boundary for `internal` visibility.
+- **Imports** — `using App.Data;`; `global using` applies project-wide;
+  `using static` imports static members.
+- **Visibility** — `public` crosses assemblies; `internal` stays within
+  one (widen via `InternalsVisibleTo`).
+- **Packaging** — NuGet packages (`.nupkg`); the registry is
+  nuget.org; restore and publish via the `dotnet` CLI.
 
 ### Metaprogramming & Reflection
 
-**Reflection** — inspect types, members, and attributes at runtime via
-`System.Reflection`; instantiate and invoke dynamically.
-**Attributes** — declarative metadata (`[Obsolete]`, custom
-attributes) read by tools and reflection.
-**Source generators** — Roslyn compile-time code generation; no
-runtime cost, AOT-friendly.
-**Expression trees** — represent code as data (`Expression<Func<>>`),
-the basis of LINQ providers.
-**`dynamic`** — opt into late-bound, runtime-resolved member access.
+- **Reflection** — inspect types, members, and attributes at runtime via
+  `System.Reflection`; instantiate and invoke dynamically.
+- **Attributes** — declarative metadata (`[Obsolete]`, custom
+  attributes) read by tools and reflection.
+- **Source generators** — Roslyn compile-time code generation; no
+  runtime cost, AOT-friendly.
+- **Expression trees** — represent code as data (`Expression<Func<>>`),
+  the basis of LINQ providers.
+- **`dynamic`** — opt into late-bound, runtime-resolved member access.
 
 > [!WARNING]
 > Reflection is powerful but slow and can break under trimming/AOT.
@@ -308,17 +331,17 @@ the basis of LINQ providers.
 
 ### Memory Management
 
-**Managed heap + GC** — reference types are heap-allocated and freed
-by a generational, tracing garbage collector; no manual `free`.
-**Value vs reference** — `struct` values live inline or on the stack;
-`class` instances are heap references. Choose `struct` for small,
-immutable data.
-**`IDisposable` / `using`** — deterministic cleanup of unmanaged
-resources; `finalizers` (`~T`) are a non-deterministic backstop.
-**`Span<T>` / `stackalloc`** — allocation-free slices over stack,
-array, or unmanaged memory; C# 14 adds first-class span conversions.
-**Pointers / `unsafe`** — raw pointers and `fixed` are available in an
-`unsafe` context for interop and performance.
+- **Managed heap + GC** — reference types are heap-allocated and freed
+  by a generational, tracing garbage collector; no manual `free`.
+- **Value vs reference** — `struct` values live inline or on the stack;
+  `class` instances are heap references. Choose `struct` for small,
+  immutable data.
+- **`IDisposable` / `using`** — deterministic cleanup of unmanaged
+  resources; `finalizers` (`~T`) are a non-deterministic backstop.
+- **`Span<T>` / `stackalloc`** — allocation-free slices over stack,
+  array, or unmanaged memory; C# 14 adds first-class span conversions.
+- **Pointers / `unsafe`** — raw pointers and `fixed` are available in an
+  `unsafe` context for interop and performance.
 
 > [!NOTE]
 > Span and ref structs cannot escape to the heap, which keeps
@@ -326,18 +349,18 @@ array, or unmanaged memory; C# 14 adds first-class span conversions.
 
 ### Concurrency & Parallelism
 
-**`async`/`await`** — the idiomatic model; `await` a `Task` or
-`ValueTask` without blocking the thread.
-**Tasks (TPL)** — `Task.Run`, `Task.WhenAll`, continuations for
-parallel and asynchronous work.
-**Threads** — `System.Threading.Thread` and the thread pool for raw
-parallelism.
-**Synchronization** — `lock`, `Monitor`, `SemaphoreSlim`,
-`Interlocked` atomics, and concurrent collections.
-**Channels & dataflow** — `System.Threading.Channels` for
-producer/consumer pipelines.
-**Parallel loops** — `Parallel.For`/`ForEach` and PLINQ
-(`.AsParallel()`).
+- **`async`/`await`** — the idiomatic model; `await` a `Task` or
+  `ValueTask` without blocking the thread.
+- **Tasks (TPL)** — `Task.Run`, `Task.WhenAll`, continuations for
+  parallel and asynchronous work.
+- **Threads** — `System.Threading.Thread` and the thread pool for raw
+  parallelism.
+- **Synchronization** — `lock`, `Monitor`, `SemaphoreSlim`,
+  `Interlocked` atomics, and concurrent collections.
+- **Channels & dataflow** — `System.Threading.Channels` for
+  producer/consumer pipelines.
+- **Parallel loops** — `Parallel.For`/`ForEach` and PLINQ
+  (`.AsParallel()`).
 
 ```csharp
 var data = await client.GetAsync(url);
@@ -382,7 +405,7 @@ enable implicit `global using` for common namespaces.
 | `dotnet pack` | build a NuGet package | `dotnet pack` |
 | `dotnet format` | code formatter | `dotnet format` |
 | Roslyn analyzers | linting / diagnostics | via build |
-| C# REPL | interactive evaluation | `dotnet csharp` |
+| file-based apps | run a `.cs` file, no project | `dotnet app.cs` |
 | Visual Studio / Rider | IDE + debugger | (GUI) |
 | ASP.NET Core | dominant web framework | `dotnet new web` |
 
@@ -402,24 +425,24 @@ enable implicit `global using` for common namespaces.
 | type parameters | `T` + PascalCase | `TResult` |
 | async methods | PascalCase + `Async` | `ReadAsync` |
 
-**Formatting** — four-space indentation, Allman braces (opening brace
-on its own line). `dotnet format` and `.editorconfig` enforce style.
-**Project layout** — one project per `.csproj`; group projects in a
-solution (`.sln` / `.slnx`); `src/` and `tests/` by convention.
-**Doc comments** — `///` XML comments generate API documentation.
+- **Formatting** — four-space indentation, Allman braces (opening brace
+  on its own line). `dotnet format` and `.editorconfig` enforce style.
+- **Project layout** — one project per `.csproj`; group projects in a
+  solution (`.sln` / `.slnx`); `src/` and `tests/` by convention.
+- **Doc comments** — `///` XML comments generate API documentation.
 
 Official style guide:
 <https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/coding-conventions>
 
 ### Idioms & Gotchas
 
-**LINQ everywhere** — prefer declarative `Where`/`Select`/`Aggregate`
-over manual loops for clarity.
-**Embrace nullable reference types** — enable `<Nullable>enable` and
-let the compiler track `null`.
-**Records for data** — use `record` for immutable value-style models
-with free equality and `with`.
-**`Async` all the way** — propagate `await`; don't block on tasks.
+- **LINQ everywhere** — prefer declarative `Where`/`Select`/`Aggregate`
+  over manual loops for clarity.
+- **Embrace nullable reference types** — enable `<Nullable>enable` and
+  let the compiler track `null`.
+- **Records for data** — use `record` for immutable value-style models
+  with free equality and `with`.
+- **`Async` all the way** — propagate `await`; don't block on tasks.
 
 > [!WARNING]
 > Default struct equality uses reflection and is slow — override

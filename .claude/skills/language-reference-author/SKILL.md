@@ -57,9 +57,11 @@ Go top-to-bottom through `TEMPLATE.md` in its given order. For each `SECTION`:
 - Keep → fill by `format`:
   - `table` → use the exact columns from its `table_schema`, in order. One row
     per item. Cells terse.
-  - `prose` → the feature atom: `**Name** — one or two sentences of purpose`,
-    plus an optional short snippet.
-  - `mixed` → lead table, then prose for nuance.
+  - `prose` → a bulleted list of feature atoms: one `- **Name** — one or two
+    sentences of purpose` list item per atom, plus an optional short snippet.
+    Never stack bare atoms as consecutive lines — GFM collapses them into a
+    run-on paragraph. Indent wrapped continuation lines two spaces.
+  - `mixed` → lead table, then a bulleted-atom list for nuance.
 - Drop → delete the entire block (heading, body, comments). No empty heading.
 - **Paradigms:** copy the applicable canonical definitions from the template's
   menu verbatim, each with a `Here:` clause.
@@ -73,9 +75,10 @@ Go top-to-bottom through `TEMPLATE.md` in its given order. For each `SECTION`:
 - Headings: `#` language title, `##` Contents, `##` each Part, `###` each
   section. The header (title + badges) sits above the Parts.
 - Drop any Part whose every section was omitted.
-- Build **Contents**: grouped by Part, surviving sections only, in order, each
-  an anchor link to its `###` heading. Use the section's full title as the link
-  text, verbatim.
+- Build **Contents** as nested bullets: one bold, unlinked top-level bullet per
+  surviving Part, with an indented sub-bullet for each surviving section, in
+  order, anchor-linking its `###` heading. Use the section's full title as the
+  link text, verbatim.
 - Strip **all** directive comments, `PART` markers, and `{{placeholders}}`.
 
 ### Phase 4 — Verify (gate; all must pass)
@@ -88,7 +91,9 @@ Check the output against `bootstrap.yaml.output_invariants`:
 - [ ] `parts_grouped` — sections nest under their Part (H2 > H3).
 - [ ] `mandatory_present` — every `mandatory_sections` entry rendered.
 - [ ] `toc_matches` — TOC equals surviving sections, in order.
+- [ ] `toc_nested` — TOC is nested bullets (bold Part bullet + indented section sub-bullets).
 - [ ] `anchors_valid` — every TOC link resolves to a heading.
+- [ ] `prose_atoms_listed` — prose/mixed atoms are list items, not run-on lines.
 - [ ] `code_wrap` — every code line ≤ 64 cols, one statement per line.
 - [ ] `tables_schema` — each table uses its declared columns exactly.
 

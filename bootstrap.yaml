@@ -24,6 +24,8 @@ structure:
     grouping: by_part  # entries grouped under their Part label
     includes: surviving_sections_only
     link_text: full_section_title   # verbatim heading text, never abbreviated
+    style: nested_bullets   # Part = top-level bullet (bold, unlinked); each
+                            # section = an indented sub-bullet linking its anchor
   part_heading: h2
   section_heading: h3
   order: fixed         # never reorder parts or sections
@@ -75,6 +77,10 @@ format:
     prose: "the feature needs a 'why' sentence (closures, ownership, paradigms)"
     mixed: "a lead table for the enumerable part, prose below for nuance"
   feature_atom: "**Name** — one or two sentences of purpose, + optional short snippet"
+  feature_atom_rendering: >
+    Emit each atom as its own Markdown list item ("- **Name** — purpose"), one
+    per line. Never stack bare atoms as consecutive lines: GFM collapses them
+    into a single run-on paragraph. Indent wrapped continuation lines two spaces.
   code:
     one_statement_per_line: true
     max_columns: 64
@@ -148,8 +154,12 @@ output_invariants:
     check: "all mandatory_sections are rendered"
   - id: toc_matches
     check: "TOC entries equal surviving sections, in order"
+  - id: toc_nested
+    check: "TOC is nested bullets: a bold unlinked Part bullet per surviving Part, each with indented section sub-bullets"
   - id: anchors_valid
     check: "every TOC link resolves to a heading in the doc"
+  - id: prose_atoms_listed
+    check: "prose/mixed feature atoms are Markdown list items (- **Name** — …), never bare consecutive lines"
   - id: code_wrap
     check: "every code line <= 64 cols, one statement per line"
   - id: tables_schema

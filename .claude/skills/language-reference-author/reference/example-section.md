@@ -14,9 +14,16 @@ illustrative — always source them in Phase 1.
 
 ## Contents
 
-- **Identity** — [Overview](#overview) · [Language Type](#language-type) · [Paradigms](#paradigms)
-- **Foundations** — [Type System](#type-system) · [Data Structures](#data-structures) · [Operators & Expressions](#operators--expressions)
-- **Runtime** — [Memory Management](#memory-management)
+- **Identity**
+  - [Overview](#overview)
+  - [Language Type](#language-type)
+  - [Paradigms](#paradigms)
+- **Foundations**
+  - [Type System](#type-system)
+  - [Data Structures](#data-structures)
+  - [Operators & Expressions](#operators--expressions)
+- **Runtime**
+  - [Memory Management](#memory-management)
 
 ---
 
@@ -53,9 +60,9 @@ to native binaries; common in CLIs, embedded, WebAssembly, and infrastructure.
 | f64 | float | 64-bit | IEEE-754 | `1.0` |
 | bool | boolean | 1 byte | true / false | `true` |
 
-**Inference** — `let x = 5` binds `i32` by default; annotate to widen.
-**Conversion** — no implicit numeric coercion; cast with `as`.
-**Nullability** — no null; absence is `Option<T>`.
+- **Inference** — `let x = 5` binds `i32` by default; annotate to widen.
+- **Conversion** — no implicit numeric coercion; cast with `as`.
+- **Nullability** — no null; absence is `Option<T>`.
 
 > [!WARNING]
 > Arithmetic overflow panics in debug, wraps in release. Use `checked_add`.
@@ -80,9 +87,9 @@ to native binaries; common in CLIs, embedded, WebAssembly, and infrastructure.
 
 ### Memory Management
 
-**Ownership** — each value has one owner; dropping the owner frees the value.
-**Borrowing** — references are shared (`&`) or exclusive (`&mut`), never both.
-**Lifetimes** — the compiler checks references never outlive their data.
+- **Ownership** — each value has one owner; dropping the owner frees the value.
+- **Borrowing** — references are shared (`&`) or exclusive (`&mut`), never both.
+- **Lifetimes** — the compiler checks references never outlive their data.
 
 > [!NOTE]
 > No garbage collector; freeing is deterministic at scope exit (RAII).
@@ -93,11 +100,12 @@ to native binaries; common in CLIs, embedded, WebAssembly, and infrastructure.
 ## What this demonstrates
 
 - **Header** above the Parts; badges on one line.
-- **Contents** grouped by Part, only surviving sections (Logic, Abstraction,
-  Practice, Reference were omitted here for brevity — a real doc keeps the
-  mandatory ones).
-- **Table vs prose:** Type System is `mixed` (primitives table + prose for
-  inference/conversion/nullability); Memory Management is `prose` atoms.
+- **Contents** as nested bullets (bold Part bullet + indented section
+  sub-bullets), only surviving sections (Logic, Abstraction, Practice, Reference
+  were omitted here for brevity — a real doc keeps the mandatory ones).
+- **Table vs prose:** Type System is `mixed` (primitives table + a bulleted atom
+  list for inference/conversion/nullability); Memory Management is a `prose`
+  atom list. Atoms are always list items, never bare consecutive lines.
 - **Exact schema columns** for each table.
 - **Code never wraps;** snippets are inline and short.
 - **Callouts** carry the gotchas.
