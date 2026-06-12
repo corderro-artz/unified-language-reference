@@ -40,8 +40,14 @@
   any wrapped continuation line by two spaces so it stays in the bullet.
 - **Code.** Snippets are short, **one statement per line**, and **never wrap** —
   keep every line under ~64 columns. Shorten or split rather than wrap.
+- **Examples.** Give each primary code section (control flow, functions, error
+  handling, object model, etc.) a short snippet showing real use. When an
+  example runs long, wrap it in a collapsed
+  `<details><summary>Example</summary>` so it stays available without
+  cluttering the page.
 - **GFM.** Tables, `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]` callouts for idioms
-  and gotchas, and `<details>` for long secondary lists. Header badges optional.
+  and gotchas, and `<details>` for long secondary lists or long code examples.
+  Header badges optional.
 - **Headings.** Title is `#`, Contents and Parts are `##`, sections are `###`.
 - **Accuracy.** Source every factual table cell (see `authoring` in the
   contract). If a value is unverifiable, drop the row — never guess.
@@ -218,18 +224,20 @@ include_if: the language has types
 omit_if: untyped with nothing to say
 format: mixed
 table_schema: primitives
-fill: Lead with the primitives table. Then prose atoms for inference,
+fill: Lead with the primitives table. Give every primitive its Default
+      column value (the value of an uninitialized/zeroed instance); if a
+      type genuinely has none, write "—". Then prose atoms for inference,
       conversion, and nullability. Add a Generics atom only if applicable.
-      Source every size/range from the spec.
+      Source every size/range/default from the spec.
 -->
 ### Type System
 
-| Syntax | Type | Size | Range | Literal |
-|---|---|---|---|---|
-| {{i32}} | {{signed integer}} | {{32-bit}} | {{-2^31 .. 2^31-1}} | {{`0i32`}} |
-| {{u8}} | {{unsigned integer}} | {{8-bit}} | {{0 .. 255}} | {{`0u8`}} |
-| {{f64}} | {{float}} | {{64-bit}} | {{IEEE-754}} | {{`1.0`}} |
-| {{bool}} | {{boolean}} | {{1 byte}} | {{true / false}} | {{`true`}} |
+| Syntax | Type | Size | Range | Default | Literal |
+|---|---|---|---|---|---|
+| {{i32}} | {{signed integer}} | {{32-bit}} | {{-2^31 .. 2^31-1}} | {{`0`}} | {{`0i32`}} |
+| {{u8}} | {{unsigned integer}} | {{8-bit}} | {{0 .. 255}} | {{`0`}} | {{`0u8`}} |
+| {{f64}} | {{float}} | {{64-bit}} | {{IEEE-754}} | {{`0.0`}} | {{`1.0`}} |
+| {{bool}} | {{boolean}} | {{1 byte}} | {{true / false}} | {{`false`}} | {{`true`}} |
 
 - **Inference** — {{when and how types are inferred}}
 - **Conversion** — {{implicit coercion vs explicit cast}}

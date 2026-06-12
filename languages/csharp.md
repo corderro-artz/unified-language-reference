@@ -51,12 +51,12 @@ async/await, and a steady annual cadence of language features.
 
 ### Language Type
 
-| Axis | This language |
-|---|---|
+| Axis      | This language                             |
+|-----------|-------------------------------------------|
 | Execution | compiled to IL, then JIT or AOT to native |
-| Domain | general-purpose |
-| Typing | static, strong, inferred, nominal |
-| Memory | managed, tracing garbage collector |
+| Domain    | general-purpose                           |
+| Typing    | static, strong, inferred, nominal         |
+| Memory    | managed, tracing garbage collector        |
 
 ### Paradigms
 
@@ -110,29 +110,29 @@ const int Max = 100;
 
 ### Type System
 
-| Syntax | Type | Size | Range | Literal |
-|---|---|---|---|---|
-| `sbyte` | signed integer | 8-bit | -128 .. 127 | `(sbyte)0` |
-| `byte` | unsigned integer | 8-bit | 0 .. 255 | `(byte)0` |
-| `short` | signed integer | 16-bit | -32768 .. 32767 | `(short)0` |
-| `ushort` | unsigned integer | 16-bit | 0 .. 65535 | `(ushort)0` |
-| `int` | signed integer | 32-bit | -2147483648 .. 2147483647 | `0` |
-| `uint` | unsigned integer | 32-bit | 0 .. 4294967295 | `0U` |
-| `long` | signed integer | 64-bit | -9.22e18 .. 9.22e18 | `0L` |
-| `ulong` | unsigned integer | 64-bit | 0 .. 1.84e19 | `0UL` |
-| `float` | float | 32-bit | ±1.5e-45 .. ±3.4e38 | `0f` |
-| `double` | float | 64-bit | ±5.0e-324 .. ±1.7e308 | `0d` |
-| `decimal` | decimal | 128-bit | ±1.0e-28 .. ±7.9228e28 | `0m` |
-| `bool` | boolean | 1 byte | true / false | `true` |
-| `char` | UTF-16 unit | 16-bit | U+0000 .. U+FFFF | `'a'` |
+| Syntax    | Type             | Size    | Range                     | Default | Literal     |
+|-----------|------------------|---------|---------------------------|---------|-------------|
+| `sbyte`   | signed integer   | 8-bit   | -128 .. 127               | `0`     | `(sbyte)0`  |
+| `byte`    | unsigned integer | 8-bit   | 0 .. 255                  | `0`     | `(byte)0`   |
+| `short`   | signed integer   | 16-bit  | -32768 .. 32767           | `0`     | `(short)0`  |
+| `ushort`  | unsigned integer | 16-bit  | 0 .. 65535                | `0`     | `(ushort)0` |
+| `int`     | signed integer   | 32-bit  | -2147483648 .. 2147483647 | `0`     | `0`         |
+| `uint`    | unsigned integer | 32-bit  | 0 .. 4294967295           | `0`     | `0U`        |
+| `long`    | signed integer   | 64-bit  | -9.22e18 .. 9.22e18       | `0`     | `0L`        |
+| `ulong`   | unsigned integer | 64-bit  | 0 .. 1.84e19              | `0`     | `0UL`       |
+| `float`   | float            | 32-bit  | ±1.5e-45 .. ±3.4e38       | `0`     | `0f`        |
+| `double`  | float            | 64-bit  | ±5.0e-324 .. ±1.7e308     | `0`     | `0d`        |
+| `decimal` | decimal          | 128-bit | ±1.0e-28 .. ±7.9228e28    | `0`     | `0m`        |
+| `bool`    | boolean          | 1 byte  | true / false              | `false` | `true`      |
+| `char`    | UTF-16 unit      | 16-bit  | U+0000 .. U+FFFF          | `'\0'`  | `'a'`       |
 
 <details>
 <summary>Native-sized and big integers</summary>
 
-| Syntax | Type | Size | Range | Literal |
-|---|---|---|---|---|
-| `nint` | native signed int | 32/64-bit | platform-dependent | `(nint)0` |
-| `nuint` | native unsigned int | 32/64-bit | platform-dependent | `(nuint)0` |
+| Syntax  | Type                | Size      | Range              | Default | Literal    |
+|---------|---------------------|-----------|--------------------|---------|------------|
+| `nint`  | native signed int   | 32/64-bit | platform-dependent | `0`     | `(nint)0`  |
+| `nuint` | native unsigned int | 32/64-bit | platform-dependent | `0`     | `(nuint)0` |
 
 `System.Numerics.BigInteger` is an arbitrary-precision integer with
 no fixed range.
@@ -148,22 +148,28 @@ no fixed range.
   constraints (`where T : class`, `: IComparable<T>`, `: new()`).
   Generics are reified: type arguments persist at runtime.
 
+```csharp
+var count = 42;        // inferred int
+int? maybe = null;     // nullable value type
+string? name = null;   // nullable reference
+```
+
 > [!NOTE]
 > Each keyword above is an alias for a `System` type — `int` is
 > `System.Int32`, `string` is `System.String`. They are interchangeable.
 
 ### Data Structures
 
-| Structure | Syntax | Ordered | Mutable | Use |
-|---|---|---|---|---|
-| array | `new[] { 1, 2, 3 }` | yes | yes | fixed-size sequence |
-| `List<T>` | `[1, 2, 3]` | yes | yes | growable sequence |
-| `Dictionary<K,V>` | `new() { ["a"] = 1 }` | no | yes | key lookup |
-| `HashSet<T>` | `new() { 1, 2 }` | no | yes | unique membership |
-| `Queue<T>` | `new Queue<int>()` | yes | yes | FIFO |
-| `Stack<T>` | `new Stack<int>()` | yes | yes | LIFO |
-| tuple | `(1, "a")` | yes | yes | lightweight group |
-| record | `new Point(1, 2)` | n/a | no | value-equality data |
+| Structure         | Syntax                | Ordered | Mutable | Use                 |
+|-------------------|-----------------------|---------|---------|---------------------|
+| array             | `new[] { 1, 2, 3 }`   | yes     | yes     | fixed-size sequence |
+| `List<T>`         | `[1, 2, 3]`           | yes     | yes     | growable sequence   |
+| `Dictionary<K,V>` | `new() { ["a"] = 1 }` | no      | yes     | key lookup          |
+| `HashSet<T>`      | `new() { 1, 2 }`      | no      | yes     | unique membership   |
+| `Queue<T>`        | `new Queue<int>()`    | yes     | yes     | FIFO                |
+| `Stack<T>`        | `new Stack<int>()`    | yes     | yes     | LIFO                |
+| tuple             | `(1, "a")`            | yes     | yes     | lightweight group   |
+| record            | `new Point(1, 2)`     | n/a     | no      | value-equality data |
 
 > [!NOTE]
 > The `[...]` collection-expression literal (C# 12+) builds arrays,
@@ -171,23 +177,23 @@ no fixed range.
 
 ### Operators & Expressions
 
-| Category | Operator | Name | Example | Note |
-|---|---|---|---|---|
-| Arithmetic | `+` | add | `a + b` | also string concat |
-| Arithmetic | `/` | divide | `a / b` | integer if both int |
-| Arithmetic | `%` | modulo | `a % b` | remainder |
-| Comparison | `==` | equal | `a == b` | value for structs |
-| Comparison | `<=` | less-equal | `a <= b` | |
-| Logical | `&&` | and | `a && b` | short-circuits |
-| Logical | `\|\|` | or | `a \|\| b` | short-circuits |
-| Bitwise | `&` | and | `a & b` | non-short-circuit |
-| Bitwise | `<<` | left shift | `a << 2` | |
-| Assignment | `=` | assign | `a = b` | |
-| Assignment | `+=` | add-assign | `a += b` | |
-| Null | `??` | coalesce | `a ?? b` | b if a is null |
-| Null | `?.` | null-cond | `a?.B` | null if a is null |
-| Special | `=>` | lambda | `x => x + 1` | also expr body |
-| Special | `is` | pattern test | `o is int n` | type/pattern match |
+| Category   | Operator | Name         | Example      | Note                |
+|------------|----------|--------------|--------------|---------------------|
+| Arithmetic | `+`      | add          | `a + b`      | also string concat  |
+| Arithmetic | `/`      | divide       | `a / b`      | integer if both int |
+| Arithmetic | `%`      | modulo       | `a % b`      | remainder           |
+| Comparison | `==`     | equal        | `a == b`     | value for structs   |
+| Comparison | `<=`     | less-equal   | `a <= b`     |                     |
+| Logical    | `&&`     | and          | `a && b`     | short-circuits      |
+| Logical    | `\|\|`   | or           | `a \|\| b`   | short-circuits      |
+| Bitwise    | `&`      | and          | `a & b`      | non-short-circuit   |
+| Bitwise    | `<<`     | left shift   | `a << 2`     |                     |
+| Assignment | `=`      | assign       | `a = b`      |                     |
+| Assignment | `+=`     | add-assign   | `a += b`     |                     |
+| Null       | `??`     | coalesce     | `a ?? b`     | b if a is null      |
+| Null       | `?.`     | null-cond    | `a?.B`       | null if a is null   |
+| Special    | `=>`     | lambda       | `x => x + 1` | also expr body      |
+| Special    | `is`     | pattern test | `o is int n` | type/pattern match  |
 
 - **Overloading** — most operators are user-overloadable via
   `static operator` members. C# 14 adds user-defined compound
@@ -240,6 +246,24 @@ var label = n switch
 Func<int, int> dbl = x => x * 2;
 ```
 
+<details>
+<summary>Example — declaration forms</summary>
+
+```csharp
+int Square(int x) => x * x;        // expression body
+
+static int Add(int a, int b = 0)   // default param
+    => a + b;
+
+int Counter()                      // local function
+{
+    int n = 0;
+    return ++n;
+}
+```
+
+</details>
+
 ### Error Handling
 
 - **Exceptions** — the primary model: `throw`, `try`/`catch`/`finally`.
@@ -281,6 +305,26 @@ finally { Cleanup(); }
 public record Point(int X, int Y);
 ```
 
+<details>
+<summary>Example — class implementing an interface</summary>
+
+```csharp
+public interface IShape
+{
+    double Area();
+}
+
+public class Circle(double r) : IShape
+{
+    public double Area() => Math.PI * r * r;
+}
+
+var shape = new Circle(2.0);
+double a = shape.Area();
+```
+
+</details>
+
 ### Functional Constructs
 
 - **Immutability** — `readonly` fields, `init` setters, and `record`
@@ -311,6 +355,12 @@ var evens = nums.Where(n => n % 2 == 0);
 - **Packaging** — NuGet packages (`.nupkg`); the registry is
   nuget.org; restore and publish via the `dotnet` CLI.
 
+```csharp
+namespace App.Data;          // file-scoped
+using System.Linq;           // import a namespace
+global using System.Text;    // project-wide import
+```
+
 ### Metaprogramming & Reflection
 
 - **Reflection** — inspect types, members, and attributes at runtime via
@@ -322,6 +372,22 @@ var evens = nums.Where(n => n % 2 == 0);
 - **Expression trees** — represent code as data (`Expression<Func<>>`),
   the basis of LINQ providers.
 - **`dynamic`** — opt into late-bound, runtime-resolved member access.
+
+<details>
+<summary>Example — reflection + attributes</summary>
+
+```csharp
+using System.Reflection;
+
+Type t = typeof(string);
+foreach (MethodInfo m in t.GetMethods())
+    Console.WriteLine(m.Name);
+
+[Obsolete("Use NewApi")]
+static void OldApi() { }
+```
+
+</details>
 
 > [!WARNING]
 > Reflection is powerful but slow and can break under trimming/AOT.
@@ -342,6 +408,19 @@ var evens = nums.Where(n => n % 2 == 0);
   array, or unmanaged memory; C# 14 adds first-class span conversions.
 - **Pointers / `unsafe`** — raw pointers and `fixed` are available in an
   `unsafe` context for interop and performance.
+
+<details>
+<summary>Example — using + stackalloc</summary>
+
+```csharp
+using var file = File.OpenText("data.txt");
+string? line = file.ReadLine();
+
+Span<int> buffer = stackalloc int[4];
+buffer[0] = 1;
+```
+
+</details>
 
 > [!NOTE]
 > Span and ref structs cannot escape to the heap, which keeps
@@ -378,52 +457,52 @@ The standard library is the .NET Base Class Library (BCL), shipped
 with the SDK/runtime. Reference it with `using` directives; most apps
 enable implicit `global using` for common namespaces.
 
-| Module | Purpose | Import |
-|---|---|---|
-| `System` | core types, `Console`, primitives | `using System;` |
-| `System.Collections.Generic` | `List<T>`, `Dictionary<K,V>` | `using System.Collections.Generic;` |
-| `System.Linq` | LINQ query operators | `using System.Linq;` |
-| `System.Threading.Tasks` | `Task`, async primitives | `using System.Threading.Tasks;` |
-| `System.IO` | files, streams, paths | `using System.IO;` |
-| `System.Text` | `StringBuilder`, encodings | `using System.Text;` |
-| `System.Text.Json` | JSON serialize/deserialize | `using System.Text.Json;` |
-| `System.Net.Http` | `HttpClient`, web requests | `using System.Net.Http;` |
-| `System.Text.RegularExpressions` | regex matching | `using System.Text.RegularExpressions;` |
-| `System.Numerics` | `BigInteger`, vectors | `using System.Numerics;` |
-| `System.Diagnostics` | tracing, `Stopwatch` | `using System.Diagnostics;` |
+| Module                           | Purpose                           | Import                                  |
+|----------------------------------|-----------------------------------|-----------------------------------------|
+| `System`                         | core types, `Console`, primitives | `using System;`                         |
+| `System.Collections.Generic`     | `List<T>`, `Dictionary<K,V>`      | `using System.Collections.Generic;`     |
+| `System.Linq`                    | LINQ query operators              | `using System.Linq;`                    |
+| `System.Threading.Tasks`         | `Task`, async primitives          | `using System.Threading.Tasks;`         |
+| `System.IO`                      | files, streams, paths             | `using System.IO;`                      |
+| `System.Text`                    | `StringBuilder`, encodings        | `using System.Text;`                    |
+| `System.Text.Json`               | JSON serialize/deserialize        | `using System.Text.Json;`               |
+| `System.Net.Http`                | `HttpClient`, web requests        | `using System.Net.Http;`                |
+| `System.Text.RegularExpressions` | regex matching                    | `using System.Text.RegularExpressions;` |
+| `System.Numerics`                | `BigInteger`, vectors             | `using System.Numerics;`                |
+| `System.Diagnostics`             | tracing, `Stopwatch`              | `using System.Diagnostics;`             |
 
 ### Tooling & Ecosystem
 
-| Tool | Role | Invoke |
-|---|---|---|
-| .NET SDK | runtime + compiler + CLI | `dotnet --info` |
-| `dotnet new` | project/template scaffolding | `dotnet new console` |
-| `dotnet build` | compile to IL assemblies | `dotnet build` |
-| `dotnet run` | build and run a project | `dotnet run` |
-| `dotnet test` | run the test suite | `dotnet test` |
-| NuGet | package manager | `dotnet add package X` |
-| `dotnet pack` | build a NuGet package | `dotnet pack` |
-| `dotnet format` | code formatter | `dotnet format` |
-| Roslyn analyzers | linting / diagnostics | via build |
-| file-based apps | run a `.cs` file, no project | `dotnet app.cs` |
-| Visual Studio / Rider | IDE + debugger | (GUI) |
-| ASP.NET Core | dominant web framework | `dotnet new web` |
+| Tool                  | Role                         | Invoke                 |
+|-----------------------|------------------------------|------------------------|
+| .NET SDK              | runtime + compiler + CLI     | `dotnet --info`        |
+| `dotnet new`          | project/template scaffolding | `dotnet new console`   |
+| `dotnet build`        | compile to IL assemblies     | `dotnet build`         |
+| `dotnet run`          | build and run a project      | `dotnet run`           |
+| `dotnet test`         | run the test suite           | `dotnet test`          |
+| NuGet                 | package manager              | `dotnet add package X` |
+| `dotnet pack`         | build a NuGet package        | `dotnet pack`          |
+| `dotnet format`       | code formatter               | `dotnet format`        |
+| Roslyn analyzers      | linting / diagnostics        | via build              |
+| file-based apps       | run a `.cs` file, no project | `dotnet app.cs`        |
+| Visual Studio / Rider | IDE + debugger               | (GUI)                  |
+| ASP.NET Core          | dominant web framework       | `dotnet new web`       |
 
 ### Conventions & Style
 
-| Identifier | Convention | Example |
-|---|---|---|
-| types / namespaces | PascalCase | `HttpClient` |
-| interfaces | `I` + PascalCase | `IDisposable` |
-| methods / properties | PascalCase | `ToString` |
-| public members | PascalCase | `Count` |
-| local variables / params | camelCase | `userId` |
-| private instance fields | `_camelCase` | `_workerQueue` |
-| private static fields | `s_camelCase` | `s_cache` |
-| thread-static fields | `t_camelCase` | `t_buffer` |
-| constants | PascalCase | `MaxLength` |
-| type parameters | `T` + PascalCase | `TResult` |
-| async methods | PascalCase + `Async` | `ReadAsync` |
+| Identifier                | Convention           | Example        |
+|---------------------------|----------------------|----------------|
+| types / namespaces        | PascalCase           | `HttpClient`   |
+| interfaces                | `I` + PascalCase     | `IDisposable`  |
+| methods / properties      | PascalCase           | `ToString`     |
+| public members            | PascalCase           | `Count`        |
+| local variables / params  | camelCase            | `userId`       |
+| private instance fields   | `_camelCase`         | `_workerQueue` |
+| private static fields     | `s_camelCase`        | `s_cache`      |
+| thread-static fields      | `t_camelCase`        | `t_buffer`     |
+| constants                 | PascalCase           | `MaxLength`    |
+| type parameters           | `T` + PascalCase     | `TResult`      |
+| async methods             | PascalCase + `Async` | `ReadAsync`    |
 
 - **Formatting** — four-space indentation, Allman braces (opening brace
   on its own line). `dotnet format` and `.editorconfig` enforce style.

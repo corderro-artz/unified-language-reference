@@ -53,12 +53,12 @@ to native binaries; common in CLIs, embedded, WebAssembly, and infrastructure.
 
 ### Type System
 
-| Syntax | Type | Size | Range | Literal |
-|---|---|---|---|---|
-| i32 | signed integer | 32-bit | -2^31 .. 2^31-1 | `0i32` |
-| u8 | unsigned integer | 8-bit | 0 .. 255 | `0u8` |
-| f64 | float | 64-bit | IEEE-754 | `1.0` |
-| bool | boolean | 1 byte | true / false | `true` |
+| Syntax | Type | Size | Range | Default | Literal |
+|---|---|---|---|---|---|
+| i32 | signed integer | 32-bit | -2^31 .. 2^31-1 | `0` | `0i32` |
+| u8 | unsigned integer | 8-bit | 0 .. 255 | `0` | `0u8` |
+| f64 | float | 64-bit | IEEE-754 | `0.0` | `1.0` |
+| bool | boolean | 1 byte | true / false | `false` | `true` |
 
 - **Inference** — `let x = 5` binds `i32` by default; annotate to widen.
 - **Conversion** — no implicit numeric coercion; cast with `as`.
@@ -106,7 +106,12 @@ to native binaries; common in CLIs, embedded, WebAssembly, and infrastructure.
 - **Table vs prose:** Type System is `mixed` (primitives table + a bulleted atom
   list for inference/conversion/nullability); Memory Management is a `prose`
   atom list. Atoms are always list items, never bare consecutive lines.
-- **Exact schema columns** for each table.
+- **Exact schema columns** for each table, including the primitives **Default**
+  column (the zeroed/default value of each type).
 - **Code never wraps;** snippets are inline and short.
+- **Examples** on primary code sections — a short snippet inline, longer ones in
+  a collapsed `<details><summary>Example</summary>` (see `languages/csharp.md`
+  for live examples; they're omitted here only to keep this sample inside one
+  fenced block).
 - **Callouts** carry the gotchas.
 - No placeholders, no directive comments, no empty headings.

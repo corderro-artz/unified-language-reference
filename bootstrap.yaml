@@ -87,14 +87,15 @@ format:
     wrap: never        # if a line would wrap, shorten or split it
   gfm:
     tables: allowed
-    details: "long secondary enumerations only, collapsed by default"
+    details: "long secondary enumerations OR long code examples, collapsed by default"
+    examples: "primary code sections (control flow, functions, error handling, object model, etc.) carry a short runnable snippet showing real use; wrap a long snippet in a collapsed <details><summary>Example</summary>"
     alerts: ["> [!NOTE]", "> [!TIP]", "> [!WARNING]"]   # gotchas / idioms
     badges: "header classification only; optional"
 
 # Fixed column sets. A section's directive references one of these by name;
 # the table must use exactly these columns, in this order.
 table_schemas:
-  primitives:       [Syntax, Type, Size, Range, Literal]
+  primitives:       [Syntax, Type, Size, Range, Default, Literal]
   data_structures:  [Structure, Syntax, Ordered, Mutable, Use]
   operators:        [Category, Operator, Name, Example, Note]
   tooling:          [Tool, Role, Invoke]
