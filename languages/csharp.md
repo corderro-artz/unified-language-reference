@@ -431,6 +431,24 @@ enable implicit `global using` for common namespaces.
   solution (`.sln` / `.slnx`); `src/` and `tests/` by convention.
 - **Doc comments** — `///` XML comments generate API documentation.
 
+Typical multi-project solution layout — source projects under `src/`,
+test projects under a parallel `tests/`:
+
+```text
+MyApp.slnx                 solution (or .sln)
+├─ src/                    application projects
+│  ├─ MyApp/               startup project
+│  │  └─ MyApp.csproj
+│  └─ MyApp.Core/          class library
+│     └─ MyApp.Core.csproj
+├─ tests/                  test projects
+│  └─ MyApp.Core.Tests/    xUnit / MSTest
+│     └─ MyApp.Core.Tests.csproj
+├─ Directory.Build.props   shared MSBuild props
+├─ .editorconfig           style + analyzer rules
+└─ README.md
+```
+
 Official style guide:
 <https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/coding-conventions>
 
