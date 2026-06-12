@@ -109,9 +109,9 @@ to native binaries; common in CLIs, embedded, WebAssembly, and infrastructure.
 - **Exact schema columns** for each table, including the primitives **Default**
   column (the zeroed/default value of each type).
 - **Code never wraps;** snippets are inline and short.
-- **Examples** on primary code sections — a short snippet inline, longer ones in
-  a collapsed `<details><summary>Example</summary>` (see `languages/csharp.md`
-  for live examples; they're omitted here only to keep this sample inside one
-  fenced block).
+- **Examples** on prose-atom sections — a brief snippet inline, plus a secondary
+  collapsed `<details>` with one labeled example per sub-item (see
+  `languages/csharp.md` for live examples; omitted here only to keep this sample
+  inside one fenced block).
 - **Callouts** carry the gotchas.
 - No placeholders, no directive comments, no empty headings.

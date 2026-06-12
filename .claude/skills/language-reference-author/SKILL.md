@@ -67,10 +67,11 @@ Go top-to-bottom through `TEMPLATE.md` in its given order. For each `SECTION`:
   menu verbatim, each with a `Here:` clause.
 - **Code:** one statement per line, ≤ 64 columns, never wrapping. Shorten or
   split instead of wrapping.
-- Give each primary code section (control flow, functions, error handling,
-  object model, and similar) a short, runnable snippet showing real use. Wrap a
-  long example in a collapsed `<details><summary>Example</summary>` block so it
-  is available without cluttering the page.
+- Give each prose-atom code section a brief inline snippet for the headline use,
+  then a secondary collapsed `<details><summary>Examples — one per item</summary>`
+  block with one short, labeled example for **every** sub-item (one snippet per
+  atom, each tagged with a `// AtomName` comment). Collapsed by default so the
+  per-item detail stays available without cluttering the page.
 - Fill the primitives table's **Default** column with each type's zeroed/default
   value (e.g. `0`, `false`, `'\0'`); write "—" only if a type truly has none.
 - Use `> [!WARNING]` / `> [!NOTE]` for gotchas and idioms; `<details>` for long

@@ -93,6 +93,24 @@ the runtime own memory so you focus on modeling the domain.
 Console.WriteLine("Hello, World!");
 ```
 
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+int a = 1;   // Comments — line
+/* block */  // and /* ... */
+/// <summary>XML doc</summary>
+
+int b = 2;                  // Statements — end ;
+public static void M() { }  // Keywords — lowercase
+
+Console.WriteLine("Hello"); // Entry point — top-level
+
+// File structure — namespace + usings at top
+```
+
+</details>
+
 ### Variables & Bindings
 
 - **`var`** — implicitly typed local; the type is inferred and fixed.
@@ -107,6 +125,32 @@ Console.WriteLine("Hello, World!");
 var name = "Ada";
 const int Max = 100;
 ```
+
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+var who = "Ada";         // var — inferred
+int count = 5;           // explicit type
+const int Max = 100;     // const — compile-time
+
+class Box
+{
+    readonly int id;     // readonly — set in ctor
+
+    Box(int id)          // param shadows field id
+    {
+        this.id = id;    // shadowing — this. = field
+    }
+
+    void M()
+    {
+        int local = 1;   // scope — block-scoped
+    }
+}
+```
+
+</details>
 
 ### Type System
 
@@ -153,6 +197,18 @@ var count = 42;        // inferred int
 int? maybe = null;     // nullable value type
 string? name = null;   // nullable reference
 ```
+
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+var n = 42;                  // Inference — var
+int x = (int)3.9;            // Conversion — cast
+string? s = null;            // Nullability — ?
+T First<T>(T[] a) => a[0];   // Generics — type param
+```
+
+</details>
 
 > [!NOTE]
 > Each keyword above is an alias for a `System` type — `int` is
@@ -228,6 +284,37 @@ var label = n switch
 };
 ```
 
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+if (n > 0) { }              // if / else
+else { }
+
+switch (n)                  // switch statement
+{
+    case 0: break;
+    default: break;
+}
+
+var s = n switch            // switch expression
+{
+    < 0 => "neg",
+    _ => "pos",
+};
+
+for (int i = 0; i < 3; i++) { }   // for
+while (n > 0) { n--; }            // while / do
+
+foreach (var c in "ab") { }       // foreach
+
+if (o is int v) { }               // pattern matching
+
+// Jumps — break / continue / return / goto
+```
+
+</details>
+
 ### Functions
 
 - **Declaration** — methods belong to a type; return type precedes the
@@ -247,18 +334,28 @@ Func<int, int> dbl = x => x * 2;
 ```
 
 <details>
-<summary>Example — declaration forms</summary>
+<summary>Examples — one per item</summary>
 
 ```csharp
-int Square(int x) => x * x;        // expression body
+int Sq(int x) => x * x;           // Declaration
 
-static int Add(int a, int b = 0)   // default param
-    => a + b;
+void P(int a, int b = 0) { }      // Parameters — default
 
-int Counter()                      // local function
+int Local()                       // Local functions
 {
-    int n = 0;
-    return ++n;
+    return 1;
+}
+
+var add = (int a, int b) => a + b;   // Lambdas
+
+Func<int, int> f = Sq;            // First-class
+
+int Apply(Func<int, int> g)       // Higher-order
+    => g(2);
+
+IEnumerable<int> Seq()            // Iterators
+{
+    yield return 1;
 }
 ```
 
@@ -280,6 +377,31 @@ try { Risky(); }
 catch (IOException e) { Log(e); }
 finally { Cleanup(); }
 ```
+
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+try                              // Exceptions
+{
+    Risky();
+}
+catch (IOException e) when (true)
+{
+    Log(e);
+}
+finally { }
+
+using var f =                   // Resource cleanup
+    File.OpenText("x");
+
+throw new InvalidOperationException();  // Propagation
+
+ArgumentNullException.ThrowIfNull(f);   // Assertions
+Debug.Assert(f is not null);
+```
+
+</details>
 
 ## Abstraction
 
@@ -306,21 +428,34 @@ public record Point(int X, int Y);
 ```
 
 <details>
-<summary>Example — class implementing an interface</summary>
+<summary>Examples — one per item</summary>
 
 ```csharp
-public interface IShape
+class Animal { }                  // Types — class
+struct Pt { }                     // struct
+record R(int X);                  // record
+interface IGo { void Go(); }      // interface
+enum Color { Red }                // enum
+
+var a = new Animal();             // Instantiation
+
+class Dog : IGo                   // Interfaces
 {
-    double Area();
+    public string Name { get; init; }   // Members
+    private int _age;                    // Encapsulation
+    public void Go() { }
 }
 
-public class Circle(double r) : IShape
+class Base { public virtual void M() { } }   // Inheritance
+class Pup : Base
 {
-    public double Area() => Math.PI * r * r;
+    public override void M() { }   // Polymorphism
 }
 
-var shape = new Circle(2.0);
-double a = shape.Area();
+Base b = new Pup();
+b.M();                            // dispatch to Pup.M
+
+class Car { Dog _pet = new(); }   // Composition
 ```
 
 </details>
@@ -342,6 +477,33 @@ double a = shape.Area();
 var evens = nums.Where(n => n % 2 == 0);
 ```
 
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+record Point(int X, int Y);       // Immutability
+var p = new Point(1, 2);
+var p2 = p with { X = 9 };        // copy via with
+
+Func<int, int> dbl = x => x * 2;  // First-class
+
+var where = p switch              // Pattern matching
+{
+    Point(0, 0) => "origin",
+    _ => "other",
+};
+
+var evens =                       // LINQ
+    nums.Where(n => n % 2 == 0);
+
+abstract record Shape;            // Discriminated unions
+record Circle(double R) : Shape;
+
+var (x, y) = (1, 2);              // Tuples
+```
+
+</details>
+
 ### Modules & Namespaces
 
 - **Namespace** — the logical grouping unit; `namespace App.Data;`
@@ -361,6 +523,26 @@ using System.Linq;           // import a namespace
 global using System.Text;    // project-wide import
 ```
 
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+namespace App.Data;          // Namespace — file-scoped
+
+// Assembly — App.dll / App.exe (build unit)
+
+using System.Linq;           // Imports
+global using System.Text;
+using static System.Math;
+
+public class Pub { }         // Visibility — cross-assembly
+internal class Internal { }  // one assembly only
+
+// Packaging — dotnet add package <Name>
+```
+
+</details>
+
 ### Metaprogramming & Reflection
 
 - **Reflection** — inspect types, members, and attributes at runtime via
@@ -374,17 +556,22 @@ global using System.Text;    // project-wide import
 - **`dynamic`** — opt into late-bound, runtime-resolved member access.
 
 <details>
-<summary>Example — reflection + attributes</summary>
+<summary>Examples — one per item</summary>
 
 ```csharp
-using System.Reflection;
+Type t = typeof(string);         // Reflection
+var ms = t.GetMethods();
 
-Type t = typeof(string);
-foreach (MethodInfo m in t.GetMethods())
-    Console.WriteLine(m.Name);
+[Obsolete("use B")]              // Attributes
+static void A() { }
 
-[Obsolete("Use NewApi")]
-static void OldApi() { }
+// Source generators — Roslyn, compile-time
+
+Expression<Func<int, int>>       // Expression trees
+    e = x => x + 1;
+
+dynamic d = 1;                   // dynamic
+d = "now a string";
 ```
 
 </details>
@@ -410,14 +597,24 @@ static void OldApi() { }
   `unsafe` context for interop and performance.
 
 <details>
-<summary>Example — using + stackalloc</summary>
+<summary>Examples — one per item</summary>
 
 ```csharp
-using var file = File.OpenText("data.txt");
-string? line = file.ReadLine();
+var o = new object();            // Managed heap + GC
 
-Span<int> buffer = stackalloc int[4];
-buffer[0] = 1;
+struct V { public int X; }       // Value vs reference
+class Ref { public int X; }
+
+using var f =                    // IDisposable / using
+    File.OpenText("data.txt");
+
+Span<int> s = stackalloc int[4]; // Span / stackalloc
+
+unsafe                           // Pointers / unsafe
+{
+    int n = 1;
+    int* p = &n;
+}
 ```
 
 </details>
@@ -444,6 +641,28 @@ buffer[0] = 1;
 ```csharp
 var data = await client.GetAsync(url);
 ```
+
+<details>
+<summary>Examples — one per item</summary>
+
+```csharp
+await Task.Delay(100);           // async / await
+
+var t = Task.Run(() => 1);       // Tasks (TPL)
+await Task.WhenAll(t);
+
+new Thread(() => { }).Start();   // Threads
+
+lock (gate) { }                  // Synchronization
+Interlocked.Increment(ref n);
+
+var ch =                         // Channels & dataflow
+    Channel.CreateUnbounded<int>();
+
+Parallel.For(0, 4, i => { });    // Parallel loops
+```
+
+</details>
 
 > [!WARNING]
 > Never `.Result` or `.Wait()` on a `Task` in async code — it can

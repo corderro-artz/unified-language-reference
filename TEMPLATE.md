@@ -40,11 +40,12 @@
   any wrapped continuation line by two spaces so it stays in the bullet.
 - **Code.** Snippets are short, **one statement per line**, and **never wrap** —
   keep every line under ~64 columns. Shorten or split rather than wrap.
-- **Examples.** Give each primary code section (control flow, functions, error
-  handling, object model, etc.) a short snippet showing real use. When an
-  example runs long, wrap it in a collapsed
-  `<details><summary>Example</summary>` so it stays available without
-  cluttering the page.
+- **Examples.** Give each prose-atom code section a brief inline snippet for the
+  headline use, then a **secondary, collapsed-by-default
+  `<details><summary>Examples — one per item</summary>`** holding one short,
+  labeled example for **every** sub-item (one snippet per atom, each tagged with
+  a `// AtomName` comment). Collapsed so the per-item detail never clutters the
+  page.
 - **GFM.** Tables, `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]` callouts for idioms
   and gotchas, and `<details>` for long secondary lists or long code examples.
   Header badges optional.
