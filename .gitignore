@@ -1,0 +1,8 @@
+# Claude Code local, machine-specific state.
+# The tracked skill (.claude/skills/**) and .mcp.json stay in the repo.
+.claude/settings.local.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*~

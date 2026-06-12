@@ -1,0 +1,156 @@
+version: 1
+
+# bootstrap.yaml — the contract for interpreting TEMPLATE.md.
+#
+# This file describes HOW to read TEMPLATE.md and what a finished
+# languages/<lang>.md must satisfy. It deliberately contains NO section
+# content, so it cannot drift from the template. TEMPLATE.md is the single
+# source of content; this is the single source of rules.
+#
+# Three artifacts, three jobs:
+#   TEMPLATE.md     -> content + per-section directives  (what to write)
+#   bootstrap.yaml  -> grammar, format rules, invariants (how to read it)
+#   .claude/skills/language-reference-author -> the procedure (how to run it)
+
+# ----------------------------------------------------------------------------
+# Document skeleton
+# ----------------------------------------------------------------------------
+structure:
+  title: h1            # the language name; one per document
+  badges: line         # classification badges, immediately under the title
+  toc:
+    required: true
+    heading: h2        # "## Contents"
+    grouping: by_part  # entries grouped under their Part label
+    includes: surviving_sections_only
+    link_text: full_section_title   # verbatim heading text, never abbreviated
+  part_heading: h2
+  section_heading: h3
+  order: fixed         # never reorder parts or sections
+
+# Parts, in fixed order. Sections are grouped under these in the output.
+parts:
+  - { id: identity,     title: Identity }
+  - { id: foundations,  title: Foundations }
+  - { id: logic,        title: Logic }
+  - { id: abstraction,  title: Abstraction }
+  - { id: runtime,      title: Runtime }
+  - { id: practice,     title: Practice }
+  - { id: reference,    title: Reference }
+
+# ----------------------------------------------------------------------------
+# Directive grammar — how a SECTION block in TEMPLATE.md is shaped
+# ----------------------------------------------------------------------------
+directive_grammar:
+  open: "<!-- SECTION: <id> | <Title>"
+  layout: >
+    Each field below appears on its own line after the open tag. The opening
+    HTML comment stays open until a line containing only -->, which sits
+    immediately before the section heading.
+  fields:
+    id:           kebab-case stable identifier
+    title:        the H3 heading text in the output
+    part:         one of parts[].id (or "none" for the header)
+    include_if:   condition; when true, keep the section
+    omit_if:      condition; when true, drop it (overrides include_if)
+    format:       one of [table, prose, mixed]
+    table_schema: optional; a name from table_schemas
+    fill:         author guidance for the body
+  close: "<!-- /SECTION -->"
+
+# ----------------------------------------------------------------------------
+# Omission
+# ----------------------------------------------------------------------------
+omission:
+  section: "include_if is false OR omit_if is true => delete the entire block"
+  part:    "every child section dropped => omit the Part heading and its TOC group"
+  rule:    "never leave an empty heading or a dangling TOC entry"
+
+# ----------------------------------------------------------------------------
+# Format rules
+# ----------------------------------------------------------------------------
+format:
+  decision:
+    table: "data is enumerable/tabular (types, operators, structures, tools)"
+    prose: "the feature needs a 'why' sentence (closures, ownership, paradigms)"
+    mixed: "a lead table for the enumerable part, prose below for nuance"
+  feature_atom: "**Name** — one or two sentences of purpose, + optional short snippet"
+  code:
+    one_statement_per_line: true
+    max_columns: 64
+    wrap: never        # if a line would wrap, shorten or split it
+  gfm:
+    tables: allowed
+    details: "long secondary enumerations only, collapsed by default"
+    alerts: ["> [!NOTE]", "> [!TIP]", "> [!WARNING]"]   # gotchas / idioms
+    badges: "header classification only; optional"
+
+# Fixed column sets. A section's directive references one of these by name;
+# the table must use exactly these columns, in this order.
+table_schemas:
+  primitives:       [Syntax, Type, Size, Range, Literal]
+  data_structures:  [Structure, Syntax, Ordered, Mutable, Use]
+  operators:        [Category, Operator, Name, Example, Note]
+  tooling:          [Tool, Role, Invoke]
+  standard_library: [Module, Purpose, Import]
+  naming:           [Identifier, Convention, Example]
+  language_type:    [Axis, This language]
+
+# ----------------------------------------------------------------------------
+# Mandatory sections — must appear in every output document
+# ----------------------------------------------------------------------------
+mandatory_sections:
+  - header
+  - overview
+  - language-type
+  - paradigms
+  - standard-library
+  - tooling
+  - conventions
+  - resources
+
+# ----------------------------------------------------------------------------
+# Authoring accuracy — facts must be sourced, never guessed
+# ----------------------------------------------------------------------------
+authoring:
+  facts_required_for: [primitives, operators, standard_library, tooling, versioning]
+  sources_in_priority:
+    - official language specification or reference
+    - official documentation
+    - context7
+    - reputable secondary source (only to corroborate the above)
+  # Documentation access points for the sources above. microsoft-learn and
+  # deepwiki are wired in .mcp.json (free, no-auth); context7 is a preinstalled
+  # plugin; web is the built-in WebSearch/WebFetch pair.
+  mcp_sources:
+    microsoft-learn: "wired (.mcp.json) — official Microsoft docs (C#, F#, .NET, PowerShell, TypeScript, VB)"
+    deepwiki: "wired (.mcp.json) — Q&A over public GitHub repos; read official spec/reference repos"
+    context7: "plugin — up-to-date library and framework documentation"
+    web: "built-in — WebSearch/WebFetch for canonical specs (ECMA, ISO, PEPs, cppreference)"
+  rule: >
+    Every factual cell must trace to a source above. If a value cannot be
+    verified, omit the row — never guess. Resolve conflicts toward the
+    official specification.
+
+# ----------------------------------------------------------------------------
+# Output invariants — a finished doc MUST satisfy all of these
+# ----------------------------------------------------------------------------
+output_invariants:
+  - id: no_placeholders
+    check: "no {{...}} remain"
+  - id: no_directives
+    check: "no <!-- ... --> comments remain"
+  - id: order_preserved
+    check: "parts and sections follow template order"
+  - id: parts_grouped
+    check: "sections nest under their Part heading (H2 > H3)"
+  - id: mandatory_present
+    check: "all mandatory_sections are rendered"
+  - id: toc_matches
+    check: "TOC entries equal surviving sections, in order"
+  - id: anchors_valid
+    check: "every TOC link resolves to a heading in the doc"
+  - id: code_wrap
+    check: "every code line <= 64 cols, one statement per line"
+  - id: tables_schema
+    check: "each table uses its declared columns exactly"

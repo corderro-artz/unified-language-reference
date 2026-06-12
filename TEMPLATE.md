@@ -1,67 +1,58 @@
 # Unified Language Reference — Master Template
 
-> **This is the single source of truth.** An agent (or a human) fills this
-> document top-to-bottom to produce one reference file per language at
-> `languages/<lang>.md`. Keep the sections whose `INCLUDE-IF` holds, delete the
-> rest, strip every directive comment, and never reorder. The result is a
-> self-contained reference for one language.
+> **Single source of content.** An agent fills this top-to-bottom to produce one
+> reference per language at `languages/<lang>.md`. The rules for *how* to read
+> this file live in [`bootstrap.yaml`](bootstrap.yaml); the step-by-step
+> procedure lives in the `language-reference-author` skill. Keep the sections
+> whose `include_if` holds, drop the rest, strip every directive comment, and
+> never reorder.
 
 ---
 
 ## How to use this template
 
-1. Copy the section order below. Walk it strictly **top to bottom**.
-2. For each `SECTION`, read its directive comment and evaluate `INCLUDE-IF`
-   against the target language. If it holds, fill the section. If `OMIT-IF`
-   holds (or `INCLUDE-IF` fails), **delete the entire block** — heading, body,
-   and comments. Never leave an empty heading behind.
-3. Fill included sections using the **feature atom** (see rules) and replace
-   every `{{placeholder}}`. No placeholder may survive into the output.
-4. Strip **all** directive comments (`<!-- ... -->`) and the `PART` dividers
-   from the final language doc.
-5. Output is a flat list of `##` sections under a single `#` title.
+1. Load [`bootstrap.yaml`](bootstrap.yaml) — it is the contract. Then walk this
+   file strictly **top to bottom**.
+2. For each `SECTION`, read its directive and evaluate `include_if` / `omit_if`
+   against the target language. Keep it or **delete the whole block** — heading,
+   body, and comments. Never leave an empty heading.
+3. Fill each kept section by its `format`:
+   - `table` — use the columns from the named `table_schema`, exactly.
+   - `prose` — use the feature atom: `**Name** — purpose` + an optional snippet.
+   - `mixed` — a lead table, then prose for nuance.
+4. After all sections are resolved, build the **Contents** block: a TOC grouped
+   by Part, listing only the sections that survived, in order.
+5. Strip **every** directive comment and Part marker. Replace **every**
+   `{{placeholder}}`. Verify the result against `output_invariants`.
 
----
+## Global rules
 
-## Global authoring rules
-
-- **Audience.** A competent developer who is new to *this* language, not to
-  programming. Explain purpose and language-specific semantics. Do not define
-  what a variable, loop, or function is in the abstract.
-- **Tone.** Peer to peer. Concise, precise, a little opinionated where the
-  community is. Elegant over exhaustive. Never a tutorial.
-- **Feature atom (default).** Document each feature as:
-
-  ```
-  **Name** — one or two sentences on its purpose (the why), not its mechanics.
-  short snippet, optional
-  ```
-
-  Use a **table** only where an at-a-glance list genuinely reads better
-  (built-ins overview, naming conventions). Nowhere else.
-- **Code.** Snippets are short and illustrative, **one statement per line**,
-  and **must never wrap** — keep every line under ~64 columns. If a snippet
-  would wrap, shorten it or split it across short lines. Never rely on
-  horizontal scrolling. No multi-screen examples.
-- **Omission is normal.** Most languages use a subset of these sections. A
-  procedural language deletes Object Model. A config language keeps only
-  Identity, a little of Foundations, Practice, and Reference. That is expected.
-- **Consistency.** Identical section titles, order, and atom shape across every
-  language, so a reader always knows where to look.
+- **Audience.** A competent developer new to *this* language, not to
+  programming. Explain purpose and language-specific semantics; never teach what
+  a variable or loop is.
+- **Real estate.** Prefer a **table** whenever the data is enumerable (types,
+  operators, data structures, tooling, stdlib, naming). Reserve prose for
+  features whose *why* needs a sentence (closures, ownership, paradigms).
+- **Code.** Snippets are short, **one statement per line**, and **never wrap** —
+  keep every line under ~64 columns. Shorten or split rather than wrap.
+- **GFM.** Tables, `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]` callouts for idioms
+  and gotchas, and `<details>` for long secondary lists. Header badges optional.
+- **Headings.** Title is `#`, Contents and Parts are `##`, sections are `###`.
+- **Accuracy.** Source every factual table cell (see `authoring` in the
+  contract). If a value is unverifiable, drop the row — never guess.
 
 ---
 
 ## Paradigm definitions (canonical menu)
 
-Defined once here. In a language's **Paradigms** section, copy only the entries
-that apply and append a `Here:` clause describing how that paradigm shows up in
-the language. Do not reword the canonical definition.
+Defined once. In a language's **Paradigms** section, copy only the entries that
+apply and append a `Here:` clause. Do not reword the canonical definition.
 
 - **Imperative** — a program is a sequence of statements that change state.
 - **Procedural** — imperative code organized into reusable procedures.
-- **Object-Oriented** — bundles state and behavior into types; objects
-  interact through methods.
-- **Functional** — computation as evaluation of functions; values over
+- **Object-Oriented** — bundles state and behavior into types; objects interact
+  through methods.
+- **Functional** — computation as the evaluation of functions; values over
   mutation, functions as first-class data.
 - **Declarative** — expresses *what* the result should be, not the step-by-step
   *how*.
@@ -78,330 +69,410 @@ the language. Do not reword the canonical definition.
 
 ---
 
-<!-- =================== PART A — IDENTITY =================== -->
+<!-- The blocks below are the template body. Everything from here down is
+     walked, filled, and stripped of its comments to produce the output doc. -->
 
-<!-- SECTION: header | Header
-INCLUDE-IF: always
-PURPOSE: title, tagline, and one-line classification badges
-FILL: H1 = language name. Italic tagline. Badge line of paradigm tags,
-      typing discipline, compiled/interpreted/transpiled, first-released year.
+<!-- SECTION: header | (document title)
+part: none
+include_if: always
+format: prose
+fill: H1 = language name. Next line = badge chips: paradigm tags, typing
+      discipline, compiled/interpreted/transpiled, first-released year.
 -->
 # {{Language}}
-
-*{{one-line tagline — what it is in a breath}}*
 
 `{{paradigm tags}}` · `{{typing discipline}}` · `{{compiled | interpreted}}` · `{{first released}}`
 <!-- /SECTION -->
 
-<!-- SECTION: overview | Overview
-INCLUDE-IF: always
-PURPOSE: what the language is and what it is for
-FILL: 2-4 sentences. Primary domains, where it runs, why it exists,
-      what it is known for.
+<!-- TOC
+required: true
+heading: h2
+grouping: by_part
+includes: surviving_sections_only
+note: Build this AFTER omission. One bullet per Part that retains sections;
+      link each surviving section by its anchor, using the section's full
+      title as the link text, verbatim. Drop Parts with no sections.
 -->
-## Overview
+## Contents
+
+- **Identity** — {{links to surviving Identity sections}}
+- **Foundations** — {{...}}
+- **Logic** — {{...}}
+- **Abstraction** — {{...}}
+- **Runtime** — {{...}}
+- **Practice** — {{...}}
+- **Reference** — {{...}}
+
+---
+
+<!-- ===================== PART: identity | Identity ===================== -->
+## Identity
+
+<!-- SECTION: overview | Overview
+part: identity
+include_if: always
+format: prose
+fill: 2-4 sentences. Primary domains, where it runs, why it exists, what it
+      is known for.
+-->
+### Overview
 
 {{2-4 sentences: domains, runtime/host, reason for being, reputation}}
 <!-- /SECTION -->
 
 <!-- SECTION: language-type | Language Type
-INCLUDE-IF: always
-PURPOSE: classify the language along the standard axes
-FILL: compiled/interpreted/transpiled; general-purpose vs domain-specific;
-      typing discipline (static/dynamic, strong/weak, manifest/inferred,
-      nominal/structural); execution/memory model in one line each.
+part: identity
+include_if: always
+format: table
+table_schema: language_type
+fill: One row per axis. Keep each cell to a phrase.
 -->
-## Language Type
+### Language Type
 
-- **Execution** — {{compiled / interpreted / transpiled, to what}}
-- **Domain** — {{general-purpose / domain-specific: which}}
-- **Typing** — {{static|dynamic, strong|weak, manifest|inferred, nominal|structural}}
-- **Model** — {{execution + memory model in one line}}
+| Axis | This language |
+|---|---|
+| Execution | {{compiled / interpreted / transpiled, to what}} |
+| Domain | {{general-purpose / domain-specific: which}} |
+| Typing | {{static\|dynamic, strong\|weak, inferred\|manifest, nominal\|structural}} |
+| Memory | {{model in a phrase}} |
 <!-- /SECTION -->
 
 <!-- SECTION: paradigms | Paradigms
-INCLUDE-IF: always
-PURPOSE: which paradigms the language supports and how
-FILL: Copy applicable entries from the canonical menu. Each line:
+part: identity
+include_if: always
+format: prose
+fill: Copy applicable entries from the canonical menu. Each line:
       **Name** — canonical definition. Here: how it manifests in this language.
 -->
-## Paradigms
+### Paradigms
 
-{{applicable paradigm bullets, each ending with a "Here:" clause}}
+{{applicable paradigm bullets, each ending in a "Here:" clause}}
 <!-- /SECTION -->
 
 <!-- SECTION: mental-model | Mental Model
-INCLUDE-IF: the language has a distinctive philosophy or way of thinking
-OMIT-IF: nothing notable beyond its paradigms
-PURPOSE: the mindset the language rewards
-FILL: 2-4 sentences. What it optimizes for, the core idea a newcomer must
-      internalize (e.g. ownership, "everything is an object", data-oriented).
+part: identity
+include_if: the language has a distinctive philosophy or way of thinking
+omit_if: nothing notable beyond its paradigms
+format: prose
+fill: 2-4 sentences on the core idea a newcomer must internalize.
 -->
-## Mental Model
+### Mental Model
 
 {{2-4 sentences on the way of thinking the language rewards}}
 <!-- /SECTION -->
 
-<!-- =================== PART B — FOUNDATIONS =================== -->
+<!-- ===================== PART: foundations | Foundations ===================== -->
+## Foundations
 
 <!-- SECTION: lexical | Lexical & Syntax
-INCLUDE-IF: the language has source syntax
-OMIT-IF: not applicable
-PURPOSE: the visible skeleton of a source file
-FILL: comments, statement termination, blocks/indentation, casing of
-      keywords, entry point, and any required file structure. Brief.
+part: foundations
+include_if: the language has source syntax
+format: prose
+fill: comments, statement termination, block style, keyword casing, entry
+      point, required file structure. Brief.
 -->
-## Lexical & Syntax
+### Lexical & Syntax
 
 {{comments, terminators, block style, entry point, file structure}}
 <!-- /SECTION -->
 
 <!-- SECTION: variables | Variables & Bindings
-INCLUDE-IF: the language has named bindings
-OMIT-IF: no concept of variables
-PURPOSE: how names are bound to values and whether they can change
-FILL: declaration forms, mutability (const/let/val/var), scope, shadowing,
+part: foundations
+include_if: the language has named bindings
+omit_if: no concept of variables
+format: prose
+fill: declaration forms, mutability (const/let/val/var), scope, shadowing,
       constants. One atom per distinct binding form.
 -->
-## Variables & Bindings
+### Variables & Bindings
 
 {{declaration forms, mutability, scope, constants}}
 <!-- /SECTION -->
 
-<!-- SECTION: types | Type System
-INCLUDE-IF: the language has types
-OMIT-IF: untyped / stringly-typed with nothing to say
-PURPOSE: the primitive and user-facing type machinery
-FILL: primitives, declaration/annotation, inference, conversion/coercion,
-      nullability. Include a Generics subsection if the language has them.
+<!-- SECTION: type-system | Type System
+part: foundations
+include_if: the language has types
+omit_if: untyped with nothing to say
+format: mixed
+table_schema: primitives
+fill: Lead with the primitives table. Then prose atoms for inference,
+      conversion, and nullability. Add a Generics atom only if applicable.
+      Source every size/range from the spec.
 -->
-## Type System
+### Type System
 
-{{primitives, annotation, inference, conversion, nullability}}
+| Syntax | Type | Size | Range | Literal |
+|---|---|---|---|---|
+| {{i32}} | {{signed integer}} | {{32-bit}} | {{-2^31 .. 2^31-1}} | {{`0i32`}} |
+| {{u8}} | {{unsigned integer}} | {{8-bit}} | {{0 .. 255}} | {{`0u8`}} |
+| {{f64}} | {{float}} | {{64-bit}} | {{IEEE-754}} | {{`1.0`}} |
+| {{bool}} | {{boolean}} | {{1 byte}} | {{true / false}} | {{`true`}} |
 
-{{Generics — only if applicable: parameterization, constraints, variance}}
+**Inference** — {{when and how types are inferred}}
+**Conversion** — {{implicit coercion vs explicit cast}}
+**Nullability** — {{how absence is represented}}
+
+{{Generics (omit if none): parameterization, bounds, variance}}
 <!-- /SECTION -->
 
 <!-- SECTION: data-structures | Data Structures
-INCLUDE-IF: the language has composite/aggregate types
-OMIT-IF: no composite data
-PURPOSE: the built-in ways to group data
-FILL: arrays/lists, maps/dicts, sets, tuples, structs/records, enums.
-      One atom each, with the literal syntax.
+part: foundations
+include_if: the language has composite/aggregate types
+omit_if: no composite data
+format: table
+table_schema: data_structures
+fill: One row per built-in structure, with its literal syntax.
 -->
-## Data Structures
+### Data Structures
 
-{{lists, maps, sets, tuples, records, enums — atom each}}
+| Structure | Syntax | Ordered | Mutable | Use |
+|---|---|---|---|---|
+| {{list}} | {{`[1, 2, 3]`}} | {{yes}} | {{yes}} | {{sequence}} |
+| {{map}} | {{`{k: v}`}} | {{no}} | {{yes}} | {{lookup}} |
 <!-- /SECTION -->
 
 <!-- SECTION: operators | Operators & Expressions
-INCLUDE-IF: the language has operators
-OMIT-IF: not applicable
-PURPOSE: how values are combined into expressions
-FILL: arithmetic, comparison, logical, bitwise, assignment, and any special
-      operators (null-coalescing, spread, pipe, ternary, range). Note
-      precedence surprises and operator overloading if present.
+part: foundations
+include_if: the language has operators
+format: mixed
+table_schema: operators
+fill: Table grouped by Category (Arithmetic, Comparison, Logical, Bitwise,
+      Assignment, Special). Note precedence surprises / overloading in prose
+      or a [!NOTE] below.
 -->
-## Operators & Expressions
+### Operators & Expressions
 
-{{operator families + special operators + precedence/overloading notes}}
+| Category | Operator | Name | Example | Note |
+|---|---|---|---|---|
+| {{Arithmetic}} | {{`+`}} | {{add}} | {{`a + b`}} | {{}} |
+| {{Comparison}} | {{`==`}} | {{equal}} | {{`a == b`}} | {{}} |
+| {{Special}} | {{`?`}} | {{try}} | {{`f()?`}} | {{propagates error}} |
+
+{{precedence or overloading notes, if any}}
 <!-- /SECTION -->
 
-<!-- =================== PART C — LOGIC =================== -->
+<!-- ===================== PART: logic | Logic ===================== -->
+## Logic
 
 <!-- SECTION: control-flow | Control Flow
-INCLUDE-IF: the language has conditionals or loops
-OMIT-IF: purely declarative with no control flow
-PURPOSE: how execution branches and repeats
-FILL: conditionals (if/switch/match), loops (for/while/foreach),
-      pattern matching, comprehensions, guards/early return. Atom each.
+part: logic
+include_if: the language has conditionals or loops
+omit_if: purely declarative with no control flow
+format: prose
+fill: conditionals (if/switch/match), loops (for/while/foreach), pattern
+      matching, comprehensions, guards/early return. Atom each.
 -->
-## Control Flow
+### Control Flow
 
 {{conditionals, loops, matching, comprehensions, guards}}
 <!-- /SECTION -->
 
 <!-- SECTION: functions | Functions
-INCLUDE-IF: the language has callable abstractions
-OMIT-IF: no user-defined callables
-PURPOSE: how reusable behavior is defined and passed around
-FILL: declaration, parameters (default/named/variadic), return, first-class
+part: logic
+include_if: the language has callable abstractions
+omit_if: no user-defined callables
+format: prose
+fill: declaration, parameters (default/named/variadic), return, first-class
       functions, closures, lambdas, higher-order, recursion, generators.
 -->
-## Functions
+### Functions
 
 {{declaration, parameters, first-class/closures/lambdas, generators}}
 <!-- /SECTION -->
 
 <!-- SECTION: error-handling | Error Handling
-INCLUDE-IF: the language has an error or failure model
-OMIT-IF: no error model
-PURPOSE: how failure is represented and propagated
-FILL: the mechanism — exceptions (try/catch/finally), result/option types,
+part: logic
+include_if: the language has an error or failure model
+omit_if: no error model
+format: prose
+fill: the mechanism — exceptions (try/catch/finally), result/option types,
       error values, panics — plus propagation and assertions.
 -->
-## Error Handling
+### Error Handling
 
 {{mechanism, propagation, assertions}}
 <!-- /SECTION -->
 
-<!-- =================== PART D — ABSTRACTION =================== -->
+<!-- ===================== PART: abstraction | Abstraction ===================== -->
+## Abstraction
 
 <!-- SECTION: object-model | Object Model
-INCLUDE-IF: the language has user-defined types with behavior
-OMIT-IF: purely procedural (e.g. C) or non-programming (SQL, CSS)
-PURPOSE: how the language models objects and their relationships
-FILL: type definition, instantiation, fields/methods, encapsulation/visibility,
+part: abstraction
+include_if: the language has user-defined types with behavior
+omit_if: purely procedural (e.g. C) or non-programming (SQL, CSS)
+format: prose
+fill: type definition, instantiation, fields/methods, encapsulation/visibility,
       inheritance, interfaces/traits/protocols, polymorphism, composition.
 -->
-## Object Model
+### Object Model
 
 {{definition, instantiation, encapsulation, inheritance, interfaces, polymorphism}}
 <!-- /SECTION -->
 
 <!-- SECTION: functional-constructs | Functional Constructs
-INCLUDE-IF: the language meaningfully supports functional style
-OMIT-IF: no functional features beyond plain functions
-PURPOSE: the functional-paradigm machinery beyond basic functions
-FILL: immutability, pure functions, algebraic data types, option/result,
+part: abstraction
+include_if: the language meaningfully supports functional style
+omit_if: no functional features beyond plain functions
+format: prose
+fill: immutability, pure functions, algebraic data types, option/result,
       pattern matching on data, currying/partial application, lazy evaluation.
 -->
-## Functional Constructs
+### Functional Constructs
 
 {{immutability, ADTs, option/result, currying, laziness}}
 <!-- /SECTION -->
 
 <!-- SECTION: modules | Modules & Namespaces
-INCLUDE-IF: the language has modular code units or namespacing
-OMIT-IF: single global scope only
-PURPOSE: how code is partitioned, named, and shared
-FILL: module/namespace unit, import/export, cross-module visibility,
+part: abstraction
+include_if: the language has modular code units or namespacing
+omit_if: single global scope only
+format: prose
+fill: module/namespace unit, import/export, cross-module visibility,
       packaging, and the dominant package manager/registry.
 -->
-## Modules & Namespaces
+### Modules & Namespaces
 
 {{module unit, import/export, visibility, packaging/registry}}
 <!-- /SECTION -->
 
 <!-- SECTION: metaprogramming | Metaprogramming & Reflection
-INCLUDE-IF: the language can inspect or generate code
-OMIT-IF: none
-PURPOSE: the language's reflective and generative capabilities
-FILL: macros, reflection, decorators/attributes/annotations, code generation,
-      eval, compile-time evaluation. Note the cost/safety tradeoffs briefly.
+part: abstraction
+include_if: the language can inspect or generate code
+omit_if: none
+format: prose
+fill: macros, reflection, decorators/attributes/annotations, code generation,
+      eval, compile-time evaluation. Note cost/safety tradeoffs briefly.
 -->
-## Metaprogramming & Reflection
+### Metaprogramming & Reflection
 
 {{macros, reflection, decorators, codegen, compile-time eval}}
 <!-- /SECTION -->
 
-<!-- =================== PART E — RUNTIME =================== -->
+<!-- ===================== PART: runtime | Runtime ===================== -->
+## Runtime
 
 <!-- SECTION: memory | Memory Management
-INCLUDE-IF: the language exposes a notable memory model
-OMIT-IF: managed and unremarkable, or not applicable
-PURPOSE: how memory is allocated and reclaimed
-FILL: allocation model (manual / GC / ARC / ownership-borrow), pointers and
+part: runtime
+include_if: the language exposes a notable memory model
+omit_if: managed and unremarkable, or not applicable
+format: prose
+fill: allocation model (manual / GC / ARC / ownership-borrow), pointers and
       references, stack vs heap, lifetimes, destructors/RAII, weak references.
 -->
-## Memory Management
+### Memory Management
 
 {{allocation model, references/pointers, lifetimes, destruction}}
 <!-- /SECTION -->
 
 <!-- SECTION: concurrency | Concurrency & Parallelism
-INCLUDE-IF: the language has concurrency primitives
-OMIT-IF: strictly single-threaded with no async model
-PURPOSE: how concurrent and parallel work is expressed
-FILL: threads, async/await, futures/promises, channels/goroutines, actors,
+part: runtime
+include_if: the language has concurrency primitives
+omit_if: strictly single-threaded with no async model
+format: prose
+fill: threads, async/await, futures/promises, channels/goroutines, actors,
       locks/atomics, the event loop. Atom each with the idiomatic form.
 -->
-## Concurrency & Parallelism
+### Concurrency & Parallelism
 
 {{threads, async, channels/actors, synchronization}}
 <!-- /SECTION -->
 
-<!-- =================== PART F — PRACTICE =================== -->
+<!-- ===================== PART: practice | Practice ===================== -->
+## Practice
 
-<!-- SECTION: stdlib | Standard Library — Start Here
-INCLUDE-IF: always
-PURPOSE: the most-used built-ins/namespaces, at a glance, as a starting point
-FILL: a TABLE of the modules/namespaces a developer reaches for first.
-      8-15 rows. Purpose column <= 8 words. Note where the stdlib lives and
-      how it is accessed in one line above the table.
+<!-- SECTION: standard-library | Standard Library — Start Here
+part: practice
+include_if: always
+format: mixed
+table_schema: standard_library
+fill: One line on where the stdlib lives and how to import. Then a table of the
+      8-15 modules a developer reaches for first. Purpose <= 8 words.
 -->
-## Standard Library — Start Here
+### Standard Library — Start Here
 
 {{one line: where the stdlib lives and how to access it}}
 
-| Module / Namespace | Purpose |
-|---|---|
-| {{name}} | {{<= 8-word purpose}} |
-| {{name}} | {{<= 8-word purpose}} |
+| Module | Purpose | Import |
+|---|---|---|
+| {{name}} | {{<= 8-word purpose}} | {{`import x`}} |
+| {{name}} | {{<= 8-word purpose}} | {{`import y`}} |
 <!-- /SECTION -->
 
 <!-- SECTION: tooling | Tooling & Ecosystem
-INCLUDE-IF: always
-PURPOSE: the everyday toolchain
-FILL: runtime/compiler, build tool, package manager, formatter, linter, test
-      framework, REPL, debugger, and the dominant frameworks. Keep it brief.
+part: practice
+include_if: always
+format: table
+table_schema: tooling
+fill: One row per tool: runtime/compiler, build, package manager, formatter,
+      linter, test runner, REPL, debugger, dominant framework(s).
 -->
-## Tooling & Ecosystem
+### Tooling & Ecosystem
 
-{{runtime, build, package manager, formatter, linter, test, REPL, frameworks}}
+| Tool | Role | Invoke |
+|---|---|---|
+| {{cargo}} | {{build + package manager}} | {{`cargo build`}} |
+| {{clippy}} | {{linter}} | {{`cargo clippy`}} |
 <!-- /SECTION -->
 
 <!-- SECTION: conventions | Conventions & Style
-INCLUDE-IF: always
-PURPOSE: the standardized conventions the community follows
-FILL: naming per identifier kind (as a small table), indentation/formatting,
-      file and project layout, documentation-comment style, and a link to the
-      official style guide. This section is mandatory for every language.
+part: practice
+include_if: always
+format: mixed
+table_schema: naming
+fill: Naming table per identifier kind. Then prose for indentation, project
+      layout, and doc-comment style. End with a link to the official style guide.
 -->
-## Conventions & Style
+### Conventions & Style
 
-| Identifier | Convention |
-|---|---|
-| {{variables}} | {{e.g. snake_case}} |
-| {{types}} | {{e.g. PascalCase}} |
-| {{constants}} | {{e.g. UPPER_SNAKE}} |
-| {{files}} | {{convention}} |
+| Identifier | Convention | Example |
+|---|---|---|
+| {{variables}} | {{snake_case}} | {{`user_id`}} |
+| {{types}} | {{PascalCase}} | {{`HttpClient`}} |
+| {{constants}} | {{UPPER_SNAKE}} | {{`MAX_LEN`}} |
+| {{files}} | {{convention}} | {{`user_service.ext`}} |
 
-{{indentation/formatting, project layout, doc-comment style, official guide link}}
+{{indentation/formatting, project layout, doc-comment style}}
+
+{{official style guide: link}}
 <!-- /SECTION -->
 
 <!-- SECTION: idioms | Idioms & Gotchas
-INCLUDE-IF: the language has notable idioms or common footguns
-OMIT-IF: nothing worth flagging
-PURPOSE: the idiomatic "right way" and the traps newcomers hit
-FILL: a short list. Each: the idiom or the gotcha in one or two sentences.
+part: practice
+include_if: the language has notable idioms or common footguns
+omit_if: nothing worth flagging
+format: prose
+fill: short list. Each: the idiom or the gotcha in one or two sentences.
+      Use > [!WARNING] for the sharp edges.
 -->
-## Idioms & Gotchas
+### Idioms & Gotchas
 
 {{idiomatic patterns and common pitfalls}}
 <!-- /SECTION -->
 
-<!-- =================== PART G — REFERENCE =================== -->
+<!-- ===================== PART: reference | Reference ===================== -->
+## Reference
 
 <!-- SECTION: versioning | Versioning & Editions
-INCLUDE-IF: version or edition differences materially affect usage
-OMIT-IF: not relevant
-PURPOSE: what a reader must know about versions
-FILL: how versioning works, notable edition/version differences, and major
+part: reference
+include_if: version or edition differences materially affect usage
+omit_if: not relevant
+format: prose
+fill: how versioning works, notable edition/version differences, major
       deprecations. Brief.
 -->
-## Versioning & Editions
+### Versioning & Editions
 
 {{versioning scheme, notable differences, deprecations}}
 <!-- /SECTION -->
 
 <!-- SECTION: resources | Resources
-INCLUDE-IF: always
-PURPOSE: where to go next
-FILL: official docs, the language spec, the style guide, the package registry,
+part: reference
+include_if: always
+format: prose
+fill: official docs, the language spec, the style guide, the package registry,
       and one or two high-quality learning resources. Links only.
 -->
-## Resources
+### Resources
 
 - {{official docs}}
 - {{language spec}}
