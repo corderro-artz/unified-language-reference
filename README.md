@@ -13,6 +13,7 @@ recalled.
 | Language | Reference | Paradigms | Typing | Latest target |
 |---|---|---|---|---|
 | C# | [csharp.md](languages/csharp.md) | multi-paradigm (OO · functional · generic) | static, strong, nullable-aware | C# 14 · .NET 10 (LTS) |
+| Python | [python.md](languages/python.md) | multi-paradigm (OO · functional · procedural) | dynamic, strong, duck-typed | Python 3.14 (CPython) |
 
 <!-- Add one row per language, kept alphabetical by the Language column. -->
 
